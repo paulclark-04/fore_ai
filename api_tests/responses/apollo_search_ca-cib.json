@@ -1,0 +1,120 @@
+{
+  "total_entries": 1466,
+  "people": [
+    {
+      "id": "636d11ad7613170001ea5ac2",
+      "first_name": "Olivier",
+      "last_name_obfuscated": "Ga***a",
+      "title": "President",
+      "last_refreshed_at": "2026-02-04T14:59:11.622+00:00",
+      "has_email": true,
+      "has_city": false,
+      "has_state": false,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Crédit Agricole CIB",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "670e1b3fcb1afc00011f9cec",
+      "first_name": "Lawrence",
+      "last_name_obfuscated": "Du***r",
+      "title": "Managing Director, Public Sector Debt Capital Markets",
+      "last_refreshed_at": "2026-01-14T06:11:40.000+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Crédit Agricole CIB",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "5fdf58f8e6af15000108cb64",
+      "first_name": "Laurent",
+      "last_name_obfuscated": "Le***c",
+      "title": "Executive Director - Debt Capital Market Legal",
+      "last_refreshed_at": "2026-01-30T10:27:09.000+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Maybe: please request direct dial via people/bulk_match",
+      "organization": {
+        "name": "Crédit Agricole CIB",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "667710b7ec95940001967c47",
+      "first_name": "Joe",
+      "last_name_obfuscated": "Le***y",
+      "title": "Vice President: HR, Recruitment",
+      "last_refreshed_at": "2026-02-10T06:30:51.478+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Crédit Agricole CIB",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "60ed1c6b4d98330001eca89d",
+      "first_name": "Anjali",
+      "last_name_obfuscated": "An***n",
+      "title": "Managing Director, Financial Institutions Coverage",
+      "last_refreshed_at": "2026-01-30T23:04:27.233+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Crédit Agricole CIB",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    }
+  ]
+}

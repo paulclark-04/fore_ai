@@ -1,0 +1,120 @@
+{
+  "total_entries": 438,
+  "people": [
+    {
+      "id": "6664c7f8fa83940001309394",
+      "first_name": "Philippe",
+      "last_name_obfuscated": "Br***c",
+      "title": "President",
+      "last_refreshed_at": "2026-02-05T18:01:45.959+00:00",
+      "has_email": true,
+      "has_city": false,
+      "has_state": false,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Groupe Crédit Agricole",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "68e7772ba3a8a7000198e08f",
+      "first_name": "Aldrick",
+      "last_name_obfuscated": "Za***i",
+      "title": "Directeur Data Groupe & Chief Data Officer Groupe Crédit Agricole",
+      "last_refreshed_at": "2026-02-05T11:41:44.311+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Groupe Crédit Agricole",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "67074d350819cf0001c7fb5d",
+      "first_name": "Jerome",
+      "last_name_obfuscated": "Gr***t",
+      "title": "Deputy Managing Director",
+      "last_refreshed_at": "2026-02-03T06:28:31.244+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Maybe: please request direct dial via people/bulk_match",
+      "organization": {
+        "name": "Groupe Crédit Agricole",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "6059c5174c8b990001b16e60",
+      "first_name": "Clotilde",
+      "last_name_obfuscated": "L'***n",
+      "title": "CFO and Deputy General Manager in Charge of Finance and Steering",
+      "last_refreshed_at": "2026-02-07T04:31:18.000+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Groupe Crédit Agricole",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "66edcefe4f5dbb000183403a",
+      "first_name": "Aymen",
+      "last_name_obfuscated": "Sh***u",
+      "title": "CTO & Head of AI - DataLab Groupe & AI Factory Group",
+      "last_refreshed_at": "2026-01-19T16:46:52.860+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Groupe Crédit Agricole",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    }
+  ]
+}

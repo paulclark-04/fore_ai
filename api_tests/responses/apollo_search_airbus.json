@@ -1,0 +1,120 @@
+{
+  "total_entries": 1150,
+  "people": [
+    {
+      "id": "5eecfd3dba37ab00012b2e0c",
+      "first_name": "Sabine",
+      "last_name_obfuscated": "Kl***e",
+      "title": "EVP Head of Digital Design Manufacturing and Services",
+      "last_refreshed_at": "2026-02-05T07:07:02.000+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Airbus",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "6119d6d7ca52410001d1a323",
+      "first_name": "Annapurna",
+      "last_name_obfuscated": "Vi***n",
+      "title": "VP Head of IM & Digital, India and South Asia",
+      "last_refreshed_at": "2026-02-05T12:33:17.499+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Airbus",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "67c55984fa4efc0001a14d7c",
+      "first_name": "Benoit",
+      "last_name_obfuscated": "Sc***z",
+      "title": "Chief Procurement Officer",
+      "last_refreshed_at": "2026-02-05T05:59:07.000+00:00",
+      "has_email": true,
+      "has_city": false,
+      "has_state": false,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Airbus",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "5fd989ca54849f0001f4fe20",
+      "first_name": "Julie",
+      "last_name_obfuscated": "Ki***r",
+      "title": "Chief Sustainability Officer and Communications",
+      "last_refreshed_at": "2026-02-07T00:09:39.000+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": true,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Airbus",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    },
+    {
+      "id": "602f5b6b057a5200011745dc",
+      "first_name": "Anand",
+      "last_name_obfuscated": "St***y",
+      "title": "President, Asia Pacific",
+      "last_refreshed_at": "2026-02-03T07:03:08.322+00:00",
+      "has_email": true,
+      "has_city": true,
+      "has_state": false,
+      "has_country": true,
+      "has_direct_phone": "Yes",
+      "organization": {
+        "name": "Airbus",
+        "has_industry": true,
+        "has_phone": true,
+        "has_city": true,
+        "has_state": true,
+        "has_country": true,
+        "has_zip_code": true,
+        "has_revenue": true,
+        "has_employee_count": true
+      }
+    }
+  ]
+}

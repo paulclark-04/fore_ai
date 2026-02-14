@@ -1,0 +1,579 @@
+{
+  "version": "1.0",
+  "description": "Ground truth for Fore AI lead scorer validation. Contains 18 leads with expected scores, tiers, categories, and key validation criteria. Sources: 7 original calibration leads (test_leads.csv) and 11 SDR-reviewed Airbus leads (Airbus_persona_review.csv + Airbus-leads.csv).",
+  "created": "2026-02-08",
+  "validation_rules": {
+    "tier_must_match": true,
+    "score_within_tolerance": true,
+    "category_must_match": true
+  },
+  "leads": [
+    {
+      "id": 1,
+      "name": "Guillaume Tronche",
+      "source": "calibration",
+      "source_file": "test_leads.csv",
+      "company": "Credit Agricole CIB",
+      "title": "Head of Software Quality Assurance and Release Manager",
+      "expected_score": 95,
+      "score_tolerance": 5,
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Primary Buyer",
+      "key_signals": [
+        "Direct QA title: Head of Software QA and Release Manager",
+        "11yr+ tenure at Credit Agricole CIB (banking/financial services)",
+        "QA tools in skills: HP QuickTest Professional, Team Foundation Server, Agile Testing",
+        "Agile methodologies experience",
+        "EPITECH engineering degree",
+        "Banking industry (target vertical)"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Must NOT flag past employer Acial/Vision IT Group as ESN consultant penalty -- only CURRENT employer matters",
+        "Past role as Testing Practice Manager at Vision IT Group is historical, not current"
+      ],
+      "validation_notes": "Textbook primary buyer. Must always score A. This is the strongest possible lead -- direct QA title, long tenure at a major bank, QA tooling in skills. The AI must identify him as a direct buyer with budget authority over QA decisions."
+    },
+    {
+      "id": 2,
+      "name": "Nicolas Sorre",
+      "source": "calibration",
+      "source_file": "test_leads.csv",
+      "company": "Airbus",
+      "title": "Head of Smart Factory - Airbus Atlantic",
+      "expected_score": 81,
+      "score_tolerance": 5,
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Innovation scout with significant budget: ~6M EUR/year R&D roadmap",
+        "Startup partnership mandate: Sets up partnerships with tech startups",
+        "Software/IT DNA despite manufacturing title: cloud data architecture, AI, web/mobile apps",
+        "Agile squads and product approach",
+        "Past role: Responsable Services Collaboratifs Web et Mobile (direct software management)",
+        "Digital transformation leadership",
+        "30-person multifunctional team"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Must NOT trigger cybersecurity red flag -- cybersecurity kits appears in description as one of many IoT projects, not in headline or title",
+        "Must NOT be dismissed as manufacturing-only -- his software DNA is strong (web, mobile, cloud, AI)",
+        "Smart Factory title should not trigger hardware penalty -- he manages software solutions for the factory"
+      ],
+      "validation_notes": "Innovation scout pattern. Despite Smart Factory title sounding manufacturing, he has budget (~6M EUR), startup mandate, and strong software DNA (cloud, AI, web/mobile). The AI must look past the title to the description. Must score A."
+    },
+    {
+      "id": 3,
+      "name": "Jeremy Signoret",
+      "source": "calibration",
+      "source_file": "test_leads.csv",
+      "company": "Lombard Odier Group",
+      "title": "Vice-President - Technical Product Owner/Project Manager",
+      "expected_score": 80,
+      "score_tolerance": 5,
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Primary Buyer",
+      "key_signals": [
+        "VP-level seniority at private bank (Lombard Odier)",
+        "Technical Product Owner managing web applications",
+        "J2EE/Spring Boot technical stack -- deep software DNA",
+        "Legacy system migration experience -- pain point Fore AI addresses",
+        "Banking industry (target vertical)",
+        "6yr+ tenure showing decision-making authority",
+        "About section explicitly mentions web-based applications in banking"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Must match VP Technical Product Owner persona (Layer 3), NOT C-Level (Layer 4)",
+        "Vice-President must NOT trigger C-Level/President detection via substring match",
+        "Seniority should be VP (18 pts), not C-Level (20 pts)"
+      ],
+      "validation_notes": "VP Technical PO pattern. Web app delivery in banking with strong technical stack. The AI must recognize this as a primary buyer who owns web application delivery and would directly benefit from QA automation. Must score A."
+    },
+    {
+      "id": 4,
+      "name": "Laurent Benatar",
+      "source": "calibration",
+      "source_file": "test_leads.csv",
+      "company": "Groupe BPCE",
+      "title": "Directeur general Technologies et Operations",
+      "expected_score": 74,
+      "score_tolerance": 8,
+      "expected_tier": "B",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Executive sponsor: DG Technologies et Operations at Groupe BPCE (major French banking group)",
+        "IT management and digital transformation expertise",
+        "Previous CTO/CISO role at Orange (major telco)",
+        "Elite education: Telecom Paris Masters degree",
+        "Oversees technology and operations strategy for entire banking group",
+        "Procurement and operations in scope"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Should be recognized as executive sponsor, not direct QA buyer",
+        "Outreach should pitch transformation/efficiency, not features"
+      ],
+      "validation_notes": "Executive sponsor at major French bank. Not a direct QA buyer but has authority over all technology and operations. The AI should recognize him as someone to pitch transformation to, not features. Tier B because he is too senior to be the direct buyer but highly influential. Must score B."
+    },
+    {
+      "id": 5,
+      "name": "Sophie Planchais",
+      "source": "calibration",
+      "source_file": "test_leads.csv",
+      "company": "Airbus",
+      "title": "Head of Cloud & DevOps @Airbus",
+      "expected_score": 66,
+      "score_tolerance": 8,
+      "expected_tier": "B",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Head of Cloud & DevOps -- owns CI/CD pipeline where QA bottlenecks live",
+        "Management of Cloud and DevOps teams and strategy",
+        "Prior role: Head of Digital Platforms and Transversal Architecture",
+        "Digital community development",
+        "ENSEEIHT engineering degree (Telecoms/Networks)"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "About section mentions SAP GRC/authorizations -- this reflects OLD specialties, not current role",
+        "Current role (DevOps) must take priority over About section (SAP legacy)",
+        "Recency principle: current Head of Cloud & DevOps trumps historical SAP background"
+      ],
+      "validation_notes": "DevOps/CI-CD pipeline owner. QA bottlenecks are her problem even though her title does not say QA. The AI must apply recency principle -- current DevOps role matters more than SAP specialties in About section. Must score B."
+    },
+    {
+      "id": 6,
+      "name": "Cornelius Waidelich",
+      "source": "calibration",
+      "source_file": "test_leads.csv",
+      "company": "Airbus",
+      "title": "Transformation Leader Airbus CTO",
+      "expected_score": 24,
+      "score_tolerance": 5,
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_signals": [],
+      "key_red_flags": [
+        "All hardware engineering: airframe engineering, wing manufacturing, manufacturing technologies",
+        "CTO trap: CTO at Airbus means physical product technology, not software",
+        "Zero software context anywhere in profile",
+        "20 years in aeronautical/automotive industry (physical products)",
+        "Industrial Engineering degree",
+        "MEET platform is about co-working for Engineers and Manufacturing Engineers, not software",
+        "Both current and past roles are hardware-focused"
+      ],
+      "anti_patterns_to_avoid": [
+        "CTO in title must NOT give high tech leadership score -- this is hardware CTO",
+        "Transformation in title must NOT trigger digital transformation persona",
+        "Factory substring must not falsely match cto -- use word boundary matching"
+      ],
+      "validation_notes": "Classic CTO trap. Title says Transformation Leader Airbus CTO which sounds tech, but every description is about airframes, wings, and manufacturing. Zero software DNA. The AI must look at descriptions, not just titles. Must score D."
+    },
+    {
+      "id": 7,
+      "name": "Daryouche Khodai",
+      "source": "calibration",
+      "source_file": "test_leads.csv",
+      "company": "BNP Paribas",
+      "title": "Cybersecurity & Digital Fraud chez BNP Paribas",
+      "expected_score": 0,
+      "score_tolerance": 5,
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_signals": [],
+      "key_red_flags": [
+        "Cybersecurity role: Analyste Computer Security Incident Response",
+        "CSIRT operations and digital fraud detection",
+        "Headline explicitly says Cybersecurity & Digital Fraud",
+        "Digital Fraud is NOT Digital Transformation -- completely different domain and budget",
+        "Security operations, not software quality"
+      ],
+      "anti_patterns_to_avoid": [
+        "Digital in Digital Fraud must NOT trigger digital transformation persona match",
+        "Past ADM toolset Manager role (Jira, Jenkins) should not override current security role",
+        "DevOps tools in past role are not enough to rehabilitate a current cybersecurity persona"
+      ],
+      "validation_notes": "Clear anti-persona. Cybersecurity and fraud detection is a completely different domain from software QA. Digital Fraud must not be confused with Digital Transformation. Must score D (ideally 0)."
+    },
+    {
+      "id": 8,
+      "name": "Arnaud Raffray",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "VP | Head of IM for Corporate Functions & Transverse Products",
+      "expected_score": 80,
+      "score_tolerance": 8,
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "VP / Head of IM reporting to CIO -- senior IT leadership with budget authority",
+        "350 people organization across 8 countries",
+        "500+ applications in scope -- enterprise-scale pain around release velocity and regression risk",
+        "Major platforms: Skywise (big data/analytics), AI and Advanced Analytics, SAP Finance, Workday, airbus.com web platform",
+        "24 years experience in transformation programs",
+        "Prior VP HR Transformation & Digital (100 people, 12 reports) -- shows pattern of large-scale digital transformation",
+        "Influences platform/tooling strategy and budget allocation",
+        "UTT engineering degree"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Not a direct QA buyer but a senior IT transformation/platform owner who sponsors deals",
+        "Should be scored as Sponsor, not Primary Buyer"
+      ],
+      "sdr_review_summary": "SDR says: That scope strongly matches enterprise-scale pain around release velocity, regression risk, and standardization -- areas where software QA agents can create value. Good target for sponsoring or unblocking a deal.",
+      "validation_notes": "Senior IT transformation leader with massive scope (350 people, 500+ apps). Strongly matches enterprise-scale QA pain even though he is not the direct QA owner. The AI must recognize the scale of his IM scope and its direct relevance to QA. Must score A."
+    },
+    {
+      "id": 9,
+      "name": "Mathieu Rebut",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "Senior Project Director, Customer Services Digital Transformation",
+      "expected_score": 68,
+      "score_tolerance": 8,
+      "expected_tier": "B",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Digital Engineering background: development and IT hosting of SW solutions",
+        "Skywise Solutions (Airbus data analytics platform) in scope",
+        "SAFe methodology transformation and team empowerment",
+        "Prior role: Head of Overall System Design with V&V (Verification and Validation) support",
+        "Requirement Based Engineering and Model Based System Engineering experience",
+        "Computer Engineering skills noted",
+        "ISAE-SUPAERO engineering degree (elite French aerospace school)",
+        "Supply chain digitalisation leadership"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "V&V support is adjacent to QA, not direct QA ownership",
+        "Current role is supply chain digitalisation, which is somewhat lateral to QA"
+      ],
+      "sdr_review_summary": "SDR says: His background includes leading Digital Engineering with development and IT hosting of software solutions (including teams moving to SAFe), suggesting he will care about delivery velocity, reliability, and operational quality. Relevant for discovery conversation.",
+      "validation_notes": "Enterprise stakeholder with strong digital engineering background and V&V adjacency. Internal sponsor/influencer rather than direct QA budget owner. SAFe transformation signals awareness of delivery quality. Must score B."
+    },
+    {
+      "id": 10,
+      "name": "Clotilde Marchal",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "Vice President Engineering Change Management",
+      "expected_score": 62,
+      "score_tolerance": 8,
+      "expected_tier": "B",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "VP-level in Engineering Change Management -- governance over engineering processes",
+        "Background: Software Developer and Artificial Intelligence Expert (1985-1990)",
+        "Senior Manager System and Software Engineering (2002-2005)",
+        "INCOSE CSEP certification (Systems Engineering Professional)",
+        "ENSIMAG degree (elite French CS/applied math school)",
+        "Long career in system/software engineering, process, methods and tools",
+        "Cross-divisional leadership at AIRBUS GROUP level",
+        "Influence over engineering governance, toolchains, and traceability"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Current title is Change Management, not QA -- she may not own QA budget directly",
+        "Should be scored as senior influencer/champion, not direct QA buyer"
+      ],
+      "sdr_review_summary": "SDR says: She is potentially relevant for Fore AI outreach, but more as a senior influencer/champion than as the day-to-day buyer for software QA agents. Strong system/software engineering background with governance influence.",
+      "validation_notes": "VP with deep software engineering roots (developer, AI expert, systems engineering) now in engineering governance. ENSIMAG degree confirms CS foundation. Influence over toolchains and traceability but not direct QA owner. Must score B."
+    },
+    {
+      "id": 11,
+      "name": "Robert Louge",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "VP IT Operational Manager",
+      "expected_score": 65,
+      "score_tolerance": 8,
+      "expected_tier": "B",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "VP IT Operational Manager -- owns IT operational products",
+        "Scope: Network, IAM, Hosting, ERP, Digital Workplace, ITOps",
+        "Mission focused on operational reliability and digital transformation",
+        "Prior role: VP Digital Transformation for Airbus IT",
+        "Created first Digital Organization for Airbus",
+        "Delivered 50M EUR yearly savings through IT organization",
+        "Information System and Network PhD from Toulouse III",
+        "8yr+ tenure at Airbus in IT leadership"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Sits above QA -- likely to route you to engineering/quality leaders rather than evaluate product himself",
+        "IT operations focus, not software delivery/QA ownership directly"
+      ],
+      "sdr_review_summary": "SDR says: He is adjacent to your ICP but not an obvious primary buyer. VP IT Operational Manager responsible for IT operational products like Network, IAM, Hosting, ERP, Digital Workplace. Good sponsor/influencer but sits above QA.",
+      "validation_notes": "Senior IT operations leader who owns ERP, Digital Workplace, and IT reliability. Creates budget/urgency for better automated testing and safer releases. Adjacent to QA but not direct owner. Must score B."
+    },
+    {
+      "id": 12,
+      "name": "Jochen Hoesch",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "Group Head of AI Strategy & Partnerships",
+      "expected_score": 60,
+      "score_tolerance": 8,
+      "expected_tier": "B",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Group Head of AI Strategy reporting to EVP Group Strategy -- innovation leadership",
+        "Defined and secured Board approval for Airbus AI strategy across all divisions",
+        "Launched first consolidated AI investment portfolio",
+        "Co-founded Group AI Centre of Excellence",
+        "Two-digit million EUR annual savings through AI-enabled optimisation",
+        "Strategic partnership with leading European AI provider for GenAI deployment",
+        "Prior role: Head of Digital & New Business -- reinvigorated Skywise commercial strategy",
+        "LBS executive education",
+        "MIT CDO certification",
+        "25 years aviation leadership experience"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Innovation/AI leadership does not automatically mean QA buyer",
+        "Very C-level/strategy positioning -- may delegate tooling decisions",
+        "Aerospace procurement and compliance paths can stall top-down pitches"
+      ],
+      "sdr_review_summary": "SDR assessment: Adjacent-relevant as innovation scout with AI budget and mandate. Executive sponsor/referral target rather than main sales path. His AI strategy role means he could pilot QA agent technology if framed as AI-enabled quality improvement.",
+      "validation_notes": "Innovation scout pattern similar to Nicolas Sorre but more strategy-focused and less hands-on software. Has budget authority over AI initiatives and partnerships. Borderline A/B -- scored B because he is more strategy/referral than direct sponsor of QA tooling. Must score B."
+    },
+    {
+      "id": 13,
+      "name": "Nicolas Merle",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "Sovereign Cloud Program Manager",
+      "expected_score": 52,
+      "score_tolerance": 8,
+      "expected_tier": "C",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Connector",
+      "key_signals": [
+        "Cloud Transformation Director background -- platform modernization",
+        "Head of Cloud Services -- managed cloud strategy and modernization",
+        "Cloud architect and finance team management",
+        "DevOps/security leadership experience",
+        "Cloud modernization ties to CI/CD quality gates"
+      ],
+      "key_red_flags": [
+        "Current role is Sovereign Cloud Program Manager -- narrow scope, only 3 months tenure",
+        "No direct QA/test ownership anywhere in profile",
+        "Platform and transformation focus, not software quality"
+      ],
+      "anti_patterns_to_avoid": [
+        "Cloud infrastructure leadership should not be confused with software QA",
+        "Short tenure in current role (3 months) suggests transitional period"
+      ],
+      "sdr_review_summary": "SDR says: He is adjacent to your ICP. Use him as a routing node inside Airbus: ask who owns test strategy / SDLC tooling / engineering productivity for teams building on the Airbus cloud platform. Not primary buyer.",
+      "validation_notes": "Cloud transformation leader useful as a routing node/connector inside Airbus. No direct QA ownership but understands platform delivery. Must score C."
+    },
+    {
+      "id": 14,
+      "name": "Fabrice Renaudeau",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "VP, Head of PDM-CM in IT",
+      "expected_score": 52,
+      "score_tolerance": 8,
+      "expected_tier": "C",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Connector",
+      "key_signals": [
+        "VP-level PLM/PDM leadership in IT -- enterprise application context",
+        "13yr+ tenure at Airbus in same leadership role -- strong influence on vendor selection",
+        "Former CIO at Renault -- demonstrates IT executive background",
+        "IBM Canada PLM consulting experience",
+        "International deployment expertise (France, Japan, Asia, Canada, US)",
+        "Organization and business process leadership"
+      ],
+      "key_red_flags": [
+        "PLM/PDM/Configuration Management focus -- not core software QA",
+        "More process/organization oriented than software testing",
+        "Better as referral path than demo target"
+      ],
+      "anti_patterns_to_avoid": [
+        "PLM leadership is adjacent to QA but not the same",
+        "Former CIO status should not over-inflate score -- current role is PLM-specific"
+      ],
+      "sdr_review_summary": "SDR says: Somewhat relevant but not a top software QA agents target unless pitch is explicitly about testing/assuring quality of enterprise IT/PLM platforms. Use him as referral path inside Airbus.",
+      "validation_notes": "VP PLM leader with strong IT executive background (former CIO Renault). Relevant if QA pitch maps to PLM ecosystem testing, otherwise a referral path. Must score C."
+    },
+    {
+      "id": 15,
+      "name": "Ludivine Brante",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "VP Procurement for Digital",
+      "expected_score": 50,
+      "score_tolerance": 8,
+      "expected_tier": "C",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Procurement Gate",
+      "key_signals": [
+        "VP Procurement for Digital -- manages digital vendor relationships",
+        "~70 FTEs across Europe with coordination in India and North America",
+        "~2.5 billion EUR annual spend across software, hardware and services",
+        "Extended team member of Airbus EVP Digital",
+        "Strategic roadmaps and partnerships for technological dependencies",
+        "Quality management background (skills include Quality Assurance, Supplier Quality)",
+        "TU Berlin engineering degree"
+      ],
+      "key_red_flags": [
+        "Procurement role -- not the QA champion or technical evaluator",
+        "Not day-to-day owner of testing outcomes",
+        "Procurement/operations oriented even with quality management background"
+      ],
+      "anti_patterns_to_avoid": [
+        "Large budget (2.5B EUR) should not over-inflate score -- this is procurement budget, not QA tooling budget",
+        "Quality Assurance in skills refers to supplier quality management, not software QA"
+      ],
+      "sdr_review_summary": "SDR says: She is relevant as a procurement/economic-buyer pathway. Strong fit on buying power and governance -- leads digital procurement with large team and spend. But likely not the day-to-day owner of testing outcomes.",
+      "validation_notes": "Procurement pathway for digital tools at Airbus. Influential once a technical team is already interested, but not the QA champion. Use as Who owns this problem plus procurement process contact. Must score C."
+    },
+    {
+      "id": 16,
+      "name": "Armel Djeukou",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "SVP - Digital Products Ecosystem",
+      "expected_score": 48,
+      "score_tolerance": 8,
+      "expected_tier": "C",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Connector",
+      "key_signals": [
+        "SVP at Airbus focused on Digital Products Ecosystem -- executive digital leadership",
+        "Previously led large-scale digital transformation (digital design/manufacturing/services, digital twins)",
+        "MIT CDO certification and Harvard M&A training",
+        "Board roles at Airbus subsidiaries (Airbus GmbH, Airbus Operations GmbH, Airbus Aerostructures GmbH)",
+        "Scope includes digital and cyber ecosystem for aerospace products",
+        "20+ years driving operational turnarounds, innovation, digital transformation"
+      ],
+      "key_red_flags": [
+        "Very C-level/strategy/transformation positioning -- too senior to own tooling decisions",
+        "Will not own QA workflows -- delegates to engineering/quality leaders",
+        "Aerospace heavy procurement and compliance paths can stall top-down pitches"
+      ],
+      "anti_patterns_to_avoid": [
+        "SVP plus Digital title should not automatically score high -- this is strategy/transformation, not QA",
+        "Board member roles are governance, not operational QA"
+      ],
+      "sdr_review_summary": "SDR says: He is adjacent-relevant but probably not the best primary buyer for software QA agents. Treat him as an executive sponsor/referral target rather than main sales path. His positioning is very C-level/strategy/transformation.",
+      "validation_notes": "Senior digital transformation executive. Too high-level to be a direct buyer but could be a referral target or executive sponsor if the pitch is framed at transformation level. Must score C."
+    },
+    {
+      "id": 17,
+      "name": "Thomas Barre",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "Semantic mapping leader - Continuity CTO project & PLM of The Future",
+      "expected_score": 40,
+      "score_tolerance": 8,
+      "expected_tier": "C",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Connector",
+      "key_signals": [
+        "PLM of The Future and digital continuity focus -- engineering toolchain modernization",
+        "SAFe certification, Scrum Master and Product Owner experience",
+        "Enterprise Architecture modelling and data model services",
+        "Prior role: Digital Transformation leader for Nose & Center Fuselages",
+        "Hackathon organizer (140 participants) -- innovation mindset",
+        "INSA Toulouse engineering degree",
+        "8yr+ tenure in Airbus engineering/digital roles"
+      ],
+      "key_red_flags": [
+        "Semantic mapping / master data models -- not software QA domain",
+        "PLM/data/architecture focus, not delivery or testing",
+        "Long-tenure engineering leadership rather than software delivery/QA ownership"
+      ],
+      "anti_patterns_to_avoid": [
+        "Digital Transformation in past title should not over-inflate current relevance -- current role is semantic mapping",
+        "SAFe/Scrum experience is good signal but not sufficient alone"
+      ],
+      "sdr_review_summary": "SDR says: He could be a useful internal champion/connector inside Airbus if QA agents map to engineering/PLM digitalization use cases. Fit is medium-low for direct buying. Position pitch as QA agents to validate PLM/digital continuity workflows and integration changes.",
+      "validation_notes": "Useful connector inside Airbus for PLM/digital continuity use cases. Not a direct buyer. SAFe/Scrum experience suggests he may sponsor pilots if value is framed as delivery acceleration. Must score C (low end)."
+    },
+    {
+      "id": 18,
+      "name": "Moez Kamoun",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus",
+      "title": "Directeur Technique et Projets",
+      "expected_score": 5,
+      "score_tolerance": 5,
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_signals": [],
+      "key_red_flags": [
+        "Manufacturing engineering focus: methodes, outillage, maintenance, moyens generaux",
+        "Industrial/technical management career -- not software",
+        "Lean/5S methodology -- manufacturing quality, not software quality",
+        "Prior roles: Directeur technique in industrial groups, R&D at Valeo (automotive)",
+        "Factory director background",
+        "ASME STAMP certification (industrial/mechanical standards)",
+        "Skills are all manufacturing/industrial: AMDEC, Lean Manufacturing, 5S, Gestion de projet",
+        "Location: Tunisia -- manages Airbus manufacturing site"
+      ],
+      "anti_patterns_to_avoid": [
+        "Directeur Technique title should not be confused with CTO of a software company",
+        "Project management skills should not trigger software PM persona -- context is manufacturing",
+        "CentraleSupelec degree should not override clear manufacturing career"
+      ],
+      "sdr_review_summary": "SDR says: He is probably not a primary target because his LinkedIn profile is centered on manufacturing/industrial engineering leadership rather than software engineering or test organizations. He could be a useful connector but is not the obvious owner of software testing.",
+      "validation_notes": "Clear manufacturing engineering profile. Zero software context. All skills and experience point to industrial/manufacturing leadership. Must score D."
+    },
+    {
+      "id": 19,
+      "name": "Jean Jacques Gavory",
+      "source": "airbus_sdr_review",
+      "source_file": "Airbus-leads.csv",
+      "company": "Airbus Defence & Space",
+      "title": "VP Head of Procurement & Supply Chain for Space Systems",
+      "expected_score": 5,
+      "score_tolerance": 5,
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_signals": [],
+      "key_red_flags": [
+        "Physical procurement for Space Systems: launchers, satellites, physical parts",
+        "Supply chain and commodity management for physical goods",
+        "Challenges described as competitiveness/EBIT, quality ppm, on-time delivery for physical products",
+        "Prior roles: CPO at ASTRIUM for space launcher procurement, Thales production/procurement",
+        "Zero software/IT/digital context in any role"
+      ],
+      "anti_patterns_to_avoid": [
+        "VP seniority should not inflate score -- domain is completely wrong",
+        "Quality ppm and on-time delivery are manufacturing metrics, not software QA"
+      ],
+      "sdr_review_summary": "SDR says: Not primary target. Senior procurement/supply-chain leader, not software quality/engineering owner. Could be relevant later as procurement gate if Airbus Defence & Space becomes a real opportunity.",
+      "validation_notes": "Physical supply chain procurement leader. Zero software context. All metrics and challenges relate to physical goods. Must score D."
+    }
+  ]
+}
