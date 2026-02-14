@@ -1,73 +1,93 @@
-# Fore AI Lead Scoring Agent
+# Fore AI Lead Scoring & Sourcing Agent
 
 ## Project Overview
 
-This is a **lead scoring system** for Paul, an SDR at **Fore AI** — a company selling autonomous QA agents for enterprise web application testing, focused on the **French market**.
+This is a **lead scoring and sourcing system** for Paul, an SDR at **Fore AI** — a company selling autonomous QA agents for enterprise web application testing, focused on the **French market**.
 
-The system takes LinkedIn profile data (enriched via Apify API) and scores each lead (0-100) with a tier (A/B/C/D) and 1-3 sentence reasoning on persona fit. Companies are **already manually vetted** — scoring is purely about **persona fit within pre-qualified companies**. Only A+B tier leads get outreach.
+The system is a **web application** (FastAPI backend + React/Vite/Tailwind CSS v4 frontend) that automates the full lead sourcing pipeline: search for people at target companies, enrich their LinkedIn profiles, optionally score them with AI, and export results. Companies are **already manually vetted** — scoring is purely about **persona fit within pre-qualified companies**. Only A+B tier leads get outreach.
 
-### Core Architecture: Hybrid Scoring
+### Architecture
 
-The script uses a **hybrid approach**:
-1. **Deterministic rules** run on ALL leads (instant, free)
-2. Leads scoring 35-82 ("borderline") get sent to **Claude API** for deeper inference
-3. Confident A (>=83) and confident D (<35) skip AI — saving cost
-4. Without an API key, the script runs in rules-only mode
+**Web App Pipeline (3 steps):**
+1. **Apify Leads Finder** (~$1.5/1k leads) — search by domain, title, seniority, location
+2. **Apify LinkedIn Profile Scraper** (~$4/1k profiles) — full experience history, about, skills, education
+3. **AI Scoring** (optional, Gemini 2.5 Flash) — hybrid rules + AI for borderline leads
 
-## Key Files
+**Standalone Scorer** (`fore_ai_scorer.py`):
+- CLI tool for scoring pre-existing CSV lead lists
+- Hybrid approach: deterministic rules for all leads, AI (Gemini) for borderline (35-82)
+- Confident A (>=83) and confident D (<35) skip AI — saving cost
+
+### Key Files
 
 ```
-fore_ai_scorer.py          # Main script (~1260 lines). THE deliverable.
-test_leads.csv             # 7 calibrated training examples in exact CSV format
-scored_leads_demo.xlsx     # Demo output showing scored results
-Fore AI Context Guide.pdf  # 10-page product/market/buyer intelligence doc (reference)
-Persona example cheat sheet - Sheet1.csv  # 4 detailed training examples with analysis
+# Web App
+backend/                    # FastAPI backend
+  core/pipeline.py          # Pipeline orchestrator (Search → Enrich → Score)
+  models/schemas.py         # Pydantic models (SearchRequest, LeadResult, CostBreakdown)
+  models/data_mapper.py     # Maps Apify API responses → scorer-compatible dicts
+  services/apify_service.py # Apify Leads Finder client
+  services/linkedin_enrichment_service.py  # Apify LinkedIn Profile Scraper client
+  services/scorer_service.py # Imports fore_ai_scorer functions for web pipeline
+  routes/search.py          # POST /api/search — start pipeline
+  routes/stream.py          # GET /api/stream/{run_id} — SSE events
+  routes/results.py         # GET /api/results/{run_id} — fetch results
+  routes/export.py          # GET /api/export/{run_id} — XLSX download
+frontend/                   # React 19 + Vite + Tailwind CSS v4
+
+# Standalone Scorer
+fore_ai_scorer.py           # Main scoring script (~1600 lines)
+scoring_prompt.txt          # AI scoring prompt for Gemini
+test_leads.csv              # 7 calibrated training examples
+
+# Docs
+foreai-scorer-prd.md        # Product requirements document
+STATUS.md                   # Current status vs PRD tracking
 ```
 
-## How to Run
+### How to Run
 
 ```bash
-# Rules-only (fast, no API cost)
+# Web app (backend + frontend)
+uvicorn backend.main:app --port 8000
+cd frontend && npm run dev    # Port 5173, proxies /api → localhost:8000
+
+# Standalone scorer — rules-only
 python fore_ai_scorer.py leads.csv
 
-# Hybrid with explicit API key
-python fore_ai_scorer.py leads.csv --api-key sk-ant-xxx
-
-# Hybrid using environment variable
-export ANTHROPIC_API_KEY=sk-ant-xxx
+# Standalone scorer — hybrid with Gemini
+export GOOGLE_API_KEY=xxx
 python fore_ai_scorer.py leads.csv --hybrid
-
-# Custom output file and model
-python fore_ai_scorer.py leads.csv -o scored.xlsx --api-key sk-ant-xxx --model claude-haiku-4-5-20251001
 ```
 
 ### Dependencies
 
 ```
-pandas, openpyxl, anthropic (only for hybrid mode)
+# Backend
+fastapi, uvicorn, httpx, pydantic, openpyxl, google-generativeai
+
+# Frontend
+react, vite, tailwindcss v4
+
+# Standalone scorer
+pandas, openpyxl, google-generativeai (only for hybrid mode)
 ```
 
-## Input CSV Format (from Apify LinkedIn enrichment)
+### API Configuration
 
+Environment variables in `.env`:
 ```
-firstName, lastName, linkedinUrl, about, headline,
-education/0/schoolName, education/0/degree, education/0/description,
-currentPosition/0/companyName,
-experience/0/description, experience/0/duration, experience/0/location,
-experience/0/companyName, experience/0/position, Experience 0 - Skills,
-experience/1/companyName, experience/1/description, experience/1/duration,
-experience/1/location, experience/1/position, Experience 1 - Skills,
-experience/2/companyName, experience/2/description, experience/2/location,
-experience/2/position, experience 2 - Skills
+APIFY_API_TOKEN=apify_api_xxx       # Required for search + enrichment
+GOOGLE_API_KEY=xxx                   # Required for AI scoring (Gemini 2.5 Flash)
 ```
 
-Note the inconsistent casing on skills columns — `Experience 0 - Skills` vs `experience 2 - Skills`. The `get_col()` function handles this by trying multiple column name variants.
+### Pipeline Cost Tracking
 
-## Output
-
-Formatted XLSX with:
-- Lead Scores sheet: color-coded tiers, auto-filtered, Method column (Rules vs AI)
-- Summary sheet: tier counts, actionable lead total, scoring method stats
+The `CostBreakdown` model tracks costs per pipeline step, streamed via SSE:
+- `leads_finder`: $0.0015/lead
+- `linkedin_enrichment`: $0.004/profile
+- `total`: sum of above (Gemini costs to be added later)
+- Tested: 10 leads = $0.055 total ($0.015 search + $0.040 enrichment)
 
 ---
 
@@ -236,12 +256,17 @@ These rules are encoded in `AI_SCORING_PROMPT` and should be maintained if the p
 
 ## Cost Optimization
 
-For the hybrid AI mode:
-- **Haiku 4.5** (`claude-haiku-4-5-20251001`): ~$2.20/month at 2,000 leads/month. Best cost/performance ratio for this structured task.
-- **Sonnet 4.5** (`claude-sonnet-4-5-20250929`): ~$8.30/month. Better for edge cases.
-- **Opus 4.5**: ~$41.30/month. Overkill for this task.
+**AI Scoring**: Gemini 2.5 Flash — fast, cheap, good at structured scoring tasks.
 
-The prompt is highly structured with 7 training examples and explicit criteria, making Haiku a strong choice. Test on the 7 training examples to validate before committing.
+**Full pipeline cost per 1,000 leads:**
+- Apify Leads Finder: ~$1.50
+- LinkedIn Profile Scraper: ~$4.00
+- Gemini AI scoring: ~$2.20 (estimated)
+- **Total: ~$7.70/1k leads fully enriched + scored**
+
+**Monthly projection (2,000 leads/month): ~$15.40**
+
+The hybrid scoring approach saves cost by only calling Gemini for borderline leads (score 35-82). Confident A and D leads are scored by rules only.
 
 ---
 
@@ -250,6 +275,7 @@ The prompt is highly structured with 7 training examples and explicit criteria, 
 After ANY change to scoring logic:
 
 ```bash
+# Standalone scorer validation
 python fore_ai_scorer.py test_leads.csv -o test_output.xlsx
 ```
 
@@ -266,15 +292,31 @@ Daryouche Khodai       0  D
 
 All 7 must match their expected tiers. Scores can shift slightly but tier assignments are the hard constraint.
 
+**Web app pipeline validation:**
+```bash
+# Start backend
+uvicorn backend.main:app --port 8000
+
+# Test full pipeline (search + enrich, scoring off)
+curl -X POST http://localhost:8000/api/search \
+  -H "Content-Type: application/json" \
+  -d '{"company_domain": ["airbus.com"], "fetch_count": 10, "enable_scoring": false}'
+
+# Test with scoring enabled
+curl -X POST http://localhost:8000/api/search \
+  -H "Content-Type: application/json" \
+  -d '{"company_domain": ["airbus.com"], "fetch_count": 10, "enable_scoring": true}'
+```
+
 ---
 
 ## Known Limitations & Future Work
 
 1. **Scores are calibrated on only 7 examples** — may need recalibration as more real-world leads are processed
-2. **Only 3 experience slots** from Apify data — misses career depth for people with 10+ roles
-3. **No company-level signals** — companies are pre-vetted, but integrating company size/vertical could improve scoring
-4. **French/English bilingual only** — keyword lists cover both but may miss other languages
-5. **Skills columns are unreliable** — Apify doesn't always populate them; some leads have empty skills
-6. **AI inference not yet tested end-to-end with real API key** — the hybrid routing logic is complete and tested with mocks, but needs a live API test
-7. **Batch processing with `--hybrid` on 200+ leads** — may need rate limiting adjustments (currently 0.5s delay between AI calls)
-8. **No deduplication** — if the same person appears in multiple CSV files, they'll be scored twice
+2. **No company-level signals** — companies are pre-vetted, but integrating company size/vertical could improve scoring
+3. **French/English bilingual only** — keyword lists cover both but may miss other languages
+4. **AI scoring not yet validated with enriched data** — hybrid scoring logic works, but needs end-to-end test with full LinkedIn profiles
+5. **In-memory storage** — pipeline runs are lost on backend restart. SQLite planned.
+6. **No deduplication** — if the same person appears in multiple searches, they'll be scored twice
+7. **No auth** — anyone with the URL can access the web app. Basic auth planned.
+8. **Rate limiting** — only basic 0.5s delay between AI calls. May need exponential backoff for 200+ leads.

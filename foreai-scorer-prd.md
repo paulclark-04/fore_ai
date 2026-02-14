@@ -10,7 +10,7 @@ A web-based lead qualification agent that automates account research for Fore AI
 
 * Reduce per-account research time from 30-45 minutes to under 5 minutes (85%+ time savings)
 * Eliminate manual LinkedIn profile review by automating persona identification and qualification
-* Lower tooling costs by leveraging Apify Leads Finder (~$1.5/1k leads) instead of paid Apollo seats, Lusha, or LinkedIn Sales Navigator
+* Lower tooling costs by leveraging Apify Leads Finder (~$1.5/1k leads) + LinkedIn Profile Scraper (~$4/1k profiles) instead of paid Apollo seats, Lusha, or LinkedIn Sales Navigator — total ~$5.50/1k leads fully enriched
 * Enable consistent, repeatable lead quality across the sales team regardless of individual market knowledge
 * Build a scoring engine that encodes institutional knowledge about the French QA buyer landscape
 
@@ -29,7 +29,7 @@ A web-based lead qualification agent that automates account research for Fore AI
 * Company-level vetting or industry validation — target accounts are already manually vetted before entering the system
 * Real-time enrichment of existing CRM records (focused on net-new account research)
 * Multi-touch sequence automation or engagement tracking
-* LinkedIn profile enrichment is planned as a separate future integration
+* ~~LinkedIn profile enrichment is planned as a separate future integration~~ — Now built and integrated
 
 ## 3. User Stories
 
@@ -83,18 +83,29 @@ Company Domain + Filters Input
     │   └─ Returns: first_name, last_name, email, personal_email,
     │       mobile_number, job_title, headline, linkedin,
     │       seniority_level, functional_level, country, company_name
-    │   └─ LinkedIn URL is key output — enables future profile enrichment
+    │   └─ LinkedIn URL is key output — used for profile enrichment
     │   └─ Free plan: max 100 leads per run
     │
-    ├─ Step 2: AI Scoring (Hybrid)
+    ├─ Step 2: LinkedIn Profile Enrichment ($4/1k profiles)
+    │   └─ Apify actor: harvestapi~linkedin-profile-scraper
+    │   └─ Input: LinkedIn URLs from Step 1 (batch, no cookies needed)
+    │   └─ Returns: about section, FULL experience history (all roles),
+    │       education (school + degree + field), skills (with endorsements),
+    │       languages, certifications, connections count
+    │   └─ Mode: "Profile details no email ($4 per 1k)" — emails already from Step 1
+    │   └─ Matched back to leads by LinkedIn URL
+    │
+    ├─ Step 3: AI Scoring (Hybrid, Optional — toggle: enable_scoring)
+    │   └─ Uses FULL enriched profile data for scoring
     │   └─ Deterministic rules run on ALL leads (instant, free)
     │   └─ Borderline leads (score 35-82) get AI inference via Gemini
     │   └─ Confident A (≥83) and confident D (<35) skip AI — saves cost
     │   └─ Returns: score (0-100), tier (A/B/C/D), reasoning, persona label
     │
-    └─ Results
-        └─ Sorted by score, with tier color coding
-        └─ Emails and contact details included directly from search
+    └─ Results + Cost Breakdown
+        └─ Sorted by score (when scoring enabled), with tier color coding
+        └─ Enriched profile data (about, experience, skills) available per lead
+        └─ Running cost tracked: leads_finder + linkedin_enrichment + (future) scoring
         └─ XLSX export with formatted output
 ```
 
@@ -138,8 +149,9 @@ Final = Persona (0-40) + Seniority (0-20) + Software DNA (0-30)
 * **Backend**: FastAPI (Python), async pipeline with SSE for real-time progress
 * **Frontend**: React 19 + Vite + Tailwind CSS v4
 * **AI Provider**: Gemini 2.5 Flash (fast, cheap) with rules-only fallback
-* **Data Source**: Apify Leads Finder actor (~$1.5/1k leads)
+* **Data Source**: Apify Leads Finder actor (~$1.5/1k leads) + LinkedIn Profile Scraper (~$4/1k profiles)
 * **Scoring Engine**: `fore_ai_scorer.py` — 1600+ line deterministic + AI hybrid scorer
+* **Cost Tracking**: CostBreakdown model tracks per-step API costs in real-time via SSE
 * **Output**: XLSX with color-coded tiers, summary sheet, auto-filters
 
 ## 6. Functional Requirements
@@ -148,7 +160,9 @@ Final = Persona (0-40) + Seniority (0-20) + Software DNA (0-30)
 
 * **Company domain input**: Search form accepts company domain(s), title keywords, seniority level, location, email status, and fetch count
 * **Apify Leads Finder search**: Single-step search returns full names, emails, job titles, headlines, LinkedIn URLs, and company info
-* **Hybrid scoring**: Rules-only for confident leads, AI for borderline cases
+* **LinkedIn Profile Enrichment**: Batch enrichment via Apify LinkedIn Profile Scraper — fetches full about, experience history, education, skills, languages, certifications for all leads. $4/1k profiles, no cookies needed. Tested: 10/10 profiles enriched successfully.
+* **Cost tracking**: Running CostBreakdown (leads_finder + linkedin_enrichment) streamed via SSE and included in results
+* **Hybrid scoring**: Rules-only for confident leads, AI for borderline cases. Optional toggle (`enable_scoring`) — off by default while testing APIs
 * **Tier classification**: A/B/C/D with per-lead reasoning and persona labels
 * **Real-time progress**: SSE streaming shows pipeline progress (Searching → Scoring → Done)
 * **Results table**: Sortable by score/tier/name, expandable detail rows with full scoring breakdown
@@ -161,7 +175,7 @@ Final = Persona (0-40) + Seniority (0-20) + Software DNA (0-30)
 
 * **Persistent storage**: Pipeline runs are currently in-memory (lost on restart) — add SQLite or similar
 * **Batch processing**: Support queuing multiple company domains for sequential processing
-* **LinkedIn profile enrichment**: Use LinkedIn URLs from Apify to fetch full experience history for deeper scoring
+* ~~**LinkedIn profile enrichment**~~: Done — integrated as Step 2 of the pipeline
 * **End-to-end validation**: Validate AI scoring against the 7 calibrated training examples with live API
 * **Error recovery**: Resume failed pipeline runs instead of starting over
 
@@ -188,7 +202,7 @@ Final = Persona (0-40) + Seniority (0-20) + Software DNA (0-30)
 
 1. User opens the web app and enters company domain(s) (e.g., `creditagricole.com`) plus optional title keywords, seniority level, location, and fetch count
 2. User clicks "Search" to start the pipeline
-3. Real-time progress indicator shows each step: Searching → Scoring → Done
+3. Real-time progress indicator shows each step: Searching → Enriching → (Scoring, if enabled) → Done, with running cost display
 4. Results appear as a sortable table with tier color coding (A=green, B=yellow, C=orange, D=red)
 5. User expands individual rows to see full scoring breakdown: persona label, seniority, reasoning, red flags
 6. Summary cards show tier distribution (e.g., "3 A-tier, 5 B-tier, 8 C-tier, 9 D-tier")
@@ -201,7 +215,7 @@ Final = Persona (0-40) + Seniority (0-20) + Software DNA (0-30)
 * **Missing email**: Some leads may not have email addresses — show in results with empty email field, still include scoring
 * **Missing mobile number**: Mobile numbers are only available on paid Apify plans — handle gracefully on free tier
 * **AI scoring failure**: If Gemini API fails, fall back to rules-only scoring automatically (already implemented)
-* **No experience history**: Apify Leads Finder only returns current role data (job_title, headline, company_name) — scoring relies on title/headline analysis without full career context. LinkedIn profile enrichment will be added later to provide deeper experience data
+* **Enrichment failures**: LinkedIn Profile Scraper may fail for some profiles (private, deleted, etc.) — leads are still usable with Leads Finder data, just scored at lower confidence
 * **LinkedIn URL missing**: Rare but possible — flag these leads for manual lookup
 
 ## 8. Narrative
@@ -233,7 +247,7 @@ The scoring engine is calibrated against 7 ground-truth examples. After any chan
 * **Time per account**: Target <2 minutes end-to-end (search to export)
 * **Tier accuracy**: A+B leads should be genuinely contactable upon manual spot-check (goal: 90%+)
 * **D-tier precision**: Red-flagged leads should be correct disqualifications (goal: 95%+)
-* **API cost per search**: ~$1.5/1k leads for Apify Leads Finder + ~$0.001/lead for Gemini Flash scoring
+* **API cost per search**: ~$1.5/1k leads (Leads Finder) + ~$4/1k (LinkedIn enrichment) + ~$0.001/lead (Gemini scoring) = ~$5.50/1k fully enriched + scored
 * **Accounts processed per week**: Target 8-12 per rep
 
 ### Health Indicators
@@ -245,30 +259,28 @@ The scoring engine is calibrated against 7 ground-truth examples. After any chan
 
 ## 10. Milestones
 
-### Now: Production Hardening
+### Now: Scoring Validation
 
-The core pipeline is built and functional. Focus is on reliability and real-world validation:
+The core pipeline (Search → Enrich → Score) is built and live-tested. LinkedIn enrichment is working (10/10 profiles enriched in test run). Focus now:
 
-* Validate scoring accuracy against the 7 calibrated examples with live Gemini API calls
-* Add persistent storage for pipeline runs (SQLite) so results survive server restarts
-* Integrate LinkedIn profile enrichment using LinkedIn URLs from Apify for deeper experience data
-* Add batch processing — queue multiple domains for sequential runs
-* Load test with 5-10 real target accounts and review scoring quality
+* Enable scoring with enriched LinkedIn data and validate against 7 calibrated examples
+* Add Gemini cost tracking to CostBreakdown
+* Add cost + time savings summary display
+* Load test with 5-10 real target accounts at full scale (100+ leads)
 * Fix any edge cases discovered during real-world usage
 
-### Next: Team Rollout
+### Next: Production Hardening
 
-* Deploy to a shared environment accessible by the sales team
-* Add search history so past runs can be browsed and re-exported
-* Add basic auth so only the sales team can access
-* Build a simple feedback mechanism (flag incorrect scores) for ongoing calibration
-* Document workflows and train team on usage
+* Add persistent storage for pipeline runs (SQLite)
+* Add basic auth
+* Input validation, error recovery, logging
+* Remove unused Apollo/LinkedIn services
+* Batch processing — queue multiple domains
 
-### Later: Scale & Intelligence
+### Later: Team Rollout & Scale
 
-* CSV import mode — upload pre-existing lead lists for scoring without Apify search
-* Multi-company batch processing with overnight queue
-* Duplicate detection across searches
-* Scoring calibration from feedback data
-* LinkedIn profile enrichment pipeline — use stored LinkedIn URLs to fetch full experience history for re-scoring
-* Consider switching AI provider (Claude Haiku vs. Gemini Flash) based on accuracy/cost data
+* Deploy to shared environment
+* Search history, feedback loop, CSV import
+* Multi-company batch processing
+* Duplicate detection, scoring calibration
+* Consider AI provider switch (Claude Haiku vs. Gemini Flash) based on accuracy/cost data
