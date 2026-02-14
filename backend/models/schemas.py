@@ -11,6 +11,7 @@ class SearchRequest(BaseModel):
     location: Optional[List[str]] = None
     email_status: Optional[List[str]] = None
     fetch_count: int = 100
+    enable_scoring: bool = False
 
 
 class LeadResult(BaseModel):
@@ -26,8 +27,18 @@ class LeadResult(BaseModel):
     seniority_level: str = ""
     functional_level: str = ""
     country: str = ""
+    # LinkedIn enrichment fields
+    about: str = ""
+    experience: Optional[List[Dict[str, Any]]] = None
+    education: Optional[List[Dict[str, Any]]] = None
+    skills: Optional[List[str]] = None
+    languages: Optional[List[str]] = None
+    certifications: Optional[List[str]] = None
+    connections_count: int = 0
+    enriched: bool = False
+    # Scoring fields
     score: int = 0
-    tier: str = "D"
+    tier: str = ""
     category: str = ""
     persona_label: str = ""
     reasoning: str = ""
@@ -35,6 +46,14 @@ class LeadResult(BaseModel):
     method: str = ""
     red_flags: str = ""
     special_flags: str = ""
+
+
+class CostBreakdown(BaseModel):
+    leads_finder: float = 0.0
+    linkedin_enrichment: float = 0.0
+    total: float = 0.0
+    leads_found: int = 0
+    profiles_enriched: int = 0
 
 
 class PipelineEvent(BaseModel):
@@ -45,6 +64,7 @@ class PipelineEvent(BaseModel):
     current: str = ""
     message: str = ""
     summary: Optional[Dict[str, int]] = None
+    cost: Optional[CostBreakdown] = None
 
 
 class PipelineRun(BaseModel):
@@ -53,3 +73,4 @@ class PipelineRun(BaseModel):
     request: Optional[SearchRequest] = None
     results: List[LeadResult] = []
     error: Optional[str] = None
+    cost: Optional[CostBreakdown] = None
