@@ -21,4 +21,5 @@ async def get_results(run_id: str):
         "results": [r.dict() for r in run.results],
         "error": run.error,
         "cost": run.cost.dict() if run.cost else None,
+        "enrichment_diagnostics": run.enrichment_diagnostics,
     }

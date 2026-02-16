@@ -70,7 +70,9 @@ class PipelineEvent(BaseModel):
 class PipelineRun(BaseModel):
     run_id: str
     status: str = "pending"
+    created_at: str = ""
     request: Optional[SearchRequest] = None
     results: List[LeadResult] = []
     error: Optional[str] = None
     cost: Optional[CostBreakdown] = None
+    enrichment_diagnostics: Optional[Dict[str, Any]] = None

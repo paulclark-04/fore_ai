@@ -34,3 +34,21 @@ export async function getResults(runId) {
 export function getExportUrl(runId) {
   return `${BASE}/api/export/${runId}/xlsx`;
 }
+
+export async function getDashboardStats() {
+  const resp = await fetch(`${BASE}/api/dashboard/stats`);
+  if (!resp.ok) throw new Error(`Failed to fetch dashboard stats: ${resp.statusText}`);
+  return resp.json();
+}
+
+export async function getRunsList() {
+  const resp = await fetch(`${BASE}/api/runs`);
+  if (!resp.ok) throw new Error(`Failed to fetch runs: ${resp.statusText}`);
+  return resp.json();
+}
+
+export async function getHistoricalRun(runId) {
+  const resp = await fetch(`${BASE}/api/runs/${runId}`);
+  if (!resp.ok) throw new Error(`Failed to fetch run: ${resp.statusText}`);
+  return resp.json();
+}

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import os
 import sys
 
@@ -18,6 +19,8 @@ from fore_ai_scorer import (
     write_output_xlsx,
 )
 from backend.config import GOOGLE_API_KEY, SCORING_MODEL, SCORING_PROVIDER
+
+logger = logging.getLogger(__name__)
 
 # Load prompt template once at import time
 _prompt_template = None
@@ -45,7 +48,7 @@ def score_lead_sync(lead: dict) -> dict:
     return score_lead(lead)
 
 
-def score_lead_ai_sync(lead: dict) -> dict | None:
+def score_lead_ai_sync(lead: dict) -> dict:
     """Score a lead using full-AI mode (Gemini). Returns result dict or None."""
     prompt = _load_prompt()
     return ai_score_lead_full(
@@ -62,13 +65,23 @@ async def score_lead_async(lead: dict) -> dict:
 
     Falls back to rules-only if AI fails.
     """
-    loop = asyncio.get_event_loop()
+    name = f"{lead.get('firstName', '')} {lead.get('lastName', '')}".strip()
 
     # Try AI scoring first
     if GOOGLE_API_KEY:
-        ai_result = await loop.run_in_executor(None, score_lead_ai_sync, lead)
+        try:
+            ai_result = await asyncio.wait_for(
+                asyncio.to_thread(score_lead_ai_sync, lead),
+                timeout=30,
+            )
+        except asyncio.TimeoutError:
+            logger.warning("AI scoring timed out for %s, falling back to rules", name)
+            ai_result = None
+        except Exception as e:
+            logger.warning("AI scoring failed for %s: %s", name, e)
+            ai_result = None
+
         if ai_result:
-            # Merge with lead info for the result
             return {
                 "score": ai_result.get("score", 0),
                 "tier": ai_result.get("tier", "D"),
@@ -80,7 +93,7 @@ async def score_lead_async(lead: dict) -> dict:
             }
 
     # Fallback to rules
-    rules_result = await loop.run_in_executor(None, score_lead_sync, lead)
+    rules_result = await asyncio.to_thread(score_lead_sync, lead)
     return {
         "score": rules_result.get("score", 0),
         "tier": rules_result.get("tier", "D"),
@@ -97,5 +110,4 @@ async def score_lead_async(lead: dict) -> dict:
 
 async def generate_xlsx(results: list[dict], output_path: str):
     """Generate XLSX file from scored results."""
-    loop = asyncio.get_event_loop()
-    await loop.run_in_executor(None, write_output_xlsx, results, output_path)
+    await asyncio.to_thread(write_output_xlsx, results, output_path)

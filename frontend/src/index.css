@@ -1,18 +1,100 @@
 @import "tailwindcss";
 
 @theme {
-  --color-tier-a: #16a34a;
-  --color-tier-a-bg: #f0fdf4;
-  --color-tier-b: #ca8a04;
-  --color-tier-b-bg: #fefce8;
-  --color-tier-c: #ea580c;
-  --color-tier-c-bg: #fff7ed;
-  --color-tier-d: #dc2626;
-  --color-tier-d-bg: #fef2f2;
+  /* Fore AI Brand Colors */
+  --color-fore-primary: #075056;
+  --color-fore-secondary: #0f1354;
+  --color-fore-accent: #5acf5d;
+
+  /* Backgrounds (light theme) */
+  --color-fore-bg: #FFFFFF;
+  --color-fore-bg-elevated: #FFFFFF;
+  --color-fore-bg-surface: #F6F8F9;
+
+  /* Text */
+  --color-fore-text: #101010;
+  --color-fore-text-secondary: #4e4f4d;
+  --color-fore-text-heading: #000000;
+
+  /* Borders */
+  --color-fore-border: #E5E7EB;
+  --color-fore-border-hover: #cdcccc;
+  --color-fore-border-active: #075056;
+
+  /* Tier Colors */
+  --color-tier-a: #075056;
+  --color-tier-a-bg: rgba(7, 80, 86, 0.08);
+  --color-tier-b: #5acf5d;
+  --color-tier-b-bg: rgba(90, 207, 93, 0.08);
+  --color-tier-c: #f59e0b;
+  --color-tier-c-bg: rgba(245, 158, 11, 0.08);
+  --color-tier-d: #ef4444;
+  --color-tier-d-bg: rgba(239, 68, 68, 0.08);
+
+  /* Danger */
+  --color-fore-danger: #ce4100;
+  --color-fore-danger-bg: #ffeae1;
+
+  /* Shadows — editorial: flat, no shadows */
+  --shadow-fore-card: none;
+
+  /* Font families */
+  --font-fore-heading: 'Stinger Fit Trial', 'Inter', system-ui, sans-serif;
+  --font-fore-body: 'Inter', system-ui, sans-serif;
+  --font-fore-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
 }
 
+/* Base */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-  background: #f8fafc;
+  font-family: var(--font-fore-body);
+  background: var(--color-fore-bg);
+  color: var(--color-fore-text);
   margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* Editorial thick rules */
+hr {
+  border: none;
+  border-top: 2px solid #075056;
+  margin: 2rem 0;
+}
+
+/* Scrollbar — subtle */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F6F8F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cdcccc;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #075056;
+}
+
+/* Selection — brand teal */
+::selection {
+  background: rgba(7, 80, 86, 0.15);
+  color: #000000;
+}
+
+/* Focus states */
+*:focus-visible {
+  outline: 2px solid #075056;
+  outline-offset: 2px;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: #075056 !important;
+  box-shadow: none;
 }

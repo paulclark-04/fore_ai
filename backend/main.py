@@ -3,7 +3,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.routes import search, events, results, export
+from backend.routes import search, events, results, export, personas, runs, dashboard
+from backend.core.database import init_db
 
 app = FastAPI(title="Fore AI Lead Scorer", version="1.0.0")
 
@@ -19,6 +20,14 @@ app.include_router(search.router)
 app.include_router(events.router)
 app.include_router(results.router)
 app.include_router(export.router)
+app.include_router(personas.router)
+app.include_router(runs.router)
+app.include_router(dashboard.router)
+
+
+@app.on_event("startup")
+def startup():
+    init_db()
 
 
 @app.get("/api/health")

@@ -3,21 +3,39 @@
 from __future__ import annotations
 
 import asyncio
+import logging
+import unicodedata
 from typing import Dict, List, Optional
+from urllib.parse import unquote
+
+logger = logging.getLogger(__name__)
 
 from backend.models.schemas import (
     SearchRequest, LeadResult, PipelineEvent, PipelineRun, CostBreakdown,
 )
 from backend.models.data_mapper import map_apify_lead, map_linkedin_profile
 from backend.services import apify_service, linkedin_enrichment_service
+from backend.core.database import save_pipeline_run
 
 # In-memory storage for pipeline runs
 _runs: Dict[str, PipelineRun] = {}
 _event_queues: Dict[str, asyncio.Queue] = {}
 
 # Cost constants
-LEADS_FINDER_COST_PER_LEAD = 0.0015  # ~$1.5 per 1,000 leads
+LEADS_FINDER_COST_PER_LEAD = 0.002  # $2 per 1,000 leads
+LEADS_FINDER_ACTOR_RUN_FEE = 0.02  # $0.02 per actor run
 LINKEDIN_ENRICHMENT_COST_PER_PROFILE = 0.004  # $4 per 1,000 profiles
+
+
+def _normalize_name(first: str, last: str) -> str:
+    """Strip accents, lowercase, and sort name parts for fuzzy matching."""
+    raw = f"{first} {last}".strip()
+    if not raw:
+        return ""
+    # Decompose unicode, strip combining marks (accents)
+    nfkd = unicodedata.normalize("NFKD", raw)
+    ascii_name = "".join(c for c in nfkd if not unicodedata.combining(c))
+    return ascii_name.lower().strip()
 
 
 def get_run(run_id: str) -> Optional[PipelineRun]:
@@ -37,7 +55,11 @@ async def _emit(run_id: str, event: PipelineEvent):
 
 async def run_pipeline(run_id: str, request: SearchRequest):
     """Execute the pipeline: Apify Search → LinkedIn Enrich → (optional) Score."""
-    run = PipelineRun(run_id=run_id, status="running", request=request)
+    from datetime import datetime
+    run = PipelineRun(
+        run_id=run_id, status="running", request=request,
+        created_at=datetime.utcnow().isoformat(),
+    )
     cost = CostBreakdown()
     run.cost = cost
     _runs[run_id] = run
@@ -62,7 +84,7 @@ async def run_pipeline(run_id: str, request: SearchRequest):
 
         # Update cost
         cost.leads_found = len(leads)
-        cost.leads_finder = len(leads) * LEADS_FINDER_COST_PER_LEAD
+        cost.leads_finder = len(leads) * LEADS_FINDER_COST_PER_LEAD + LEADS_FINDER_ACTOR_RUN_FEE
 
         await _emit(run_id, PipelineEvent(
             step="search", status="complete",
@@ -121,18 +143,44 @@ async def run_pipeline(run_id: str, request: SearchRequest):
             cost.profiles_enriched = len(enriched_profiles)
             cost.linkedin_enrichment = len(enriched_profiles) * LINKEDIN_ENRICHMENT_COST_PER_PROFILE
 
-            # Build a lookup by LinkedIn URL for matching
+            # Build lookups by URL and by normalized name
             enrichment_by_url = {}
+            enrichment_by_name = {}
             for profile in enriched_profiles:
-                url = (profile.get("linkedinUrl") or "").rstrip("/").lower()
+                mapped = map_linkedin_profile(profile)
+                url = unquote((profile.get("linkedinUrl") or "")).rstrip("/").lower()
                 if url:
-                    enrichment_by_url[url] = map_linkedin_profile(profile)
+                    enrichment_by_url[url] = mapped
+                # Name-based fallback key: strip accents, lowercase
+                fn = mapped.get("first_name") or ""
+                ln = mapped.get("last_name") or ""
+                name_key = _normalize_name(fn, ln)
+                if name_key:
+                    enrichment_by_name[name_key] = mapped
 
             # Merge enrichment into results
             enriched_count = 0
+            name_fallback_count = 0
             for result in results:
-                url_key = result.linkedin_url.rstrip("/").lower()
+                # Try URL match first
+                url_key = unquote(result.linkedin_url).rstrip("/").lower()
                 enrichment = enrichment_by_url.get(url_key)
+                matched_by = "url" if enrichment else None
+
+                # Fallback: match by normalized name
+                if not enrichment:
+                    name_key = _normalize_name(result.first_name, result.last_name)
+                    enrichment = enrichment_by_name.get(name_key)
+                    if enrichment:
+                        matched_by = "name"
+                        name_fallback_count += 1
+                        logger.info(
+                            "Name fallback match: %s %s (lead URL: %s → scraper URL: %s)",
+                            result.first_name, result.last_name,
+                            result.linkedin_url,
+                            enrichment.get("linkedin_url", ""),
+                        )
+
                 if enrichment:
                     result.about = enrichment.get("about") or ""
                     result.headline = enrichment.get("headline") or result.headline
@@ -150,6 +198,31 @@ async def run_pipeline(run_id: str, request: SearchRequest):
                         result.first_name = enrichment["first_name"]
                     if enrichment.get("last_name"):
                         result.last_name = enrichment["last_name"]
+
+            # Log enrichment diagnostics
+            logger.info(
+                "Enrichment: sent=%d, scraper_returned=%d, matched=%d (url=%d, name_fallback=%d)",
+                len(linkedin_urls), len(enriched_profiles),
+                enriched_count, enriched_count - name_fallback_count, name_fallback_count,
+            )
+            not_enriched = [
+                f"{r.first_name} {r.last_name} ({r.linkedin_url})"
+                for r in results if not r.enriched
+            ]
+            if not_enriched:
+                logger.warning("Still not enriched (%d):", len(not_enriched))
+                for entry in not_enriched:
+                    logger.warning("  %s", entry)
+
+            # Store diagnostics on the run for API access
+            run.enrichment_diagnostics = {
+                "urls_sent": len(linkedin_urls),
+                "scraper_returned": len(enriched_profiles),
+                "matched": enriched_count,
+                "by_url": enriched_count - name_fallback_count,
+                "by_name_fallback": name_fallback_count,
+                "not_enriched": not_enriched,
+            }
 
             await _emit(run_id, PipelineEvent(
                 step="enrich", status="complete",
@@ -240,6 +313,9 @@ async def run_pipeline(run_id: str, request: SearchRequest):
             for r in results:
                 tier_counts[r.tier] = tier_counts.get(r.tier, 0) + 1
 
+        # Persist to SQLite
+        save_pipeline_run(run)
+
         msg = f"Pipeline complete — {len(results)} leads"
         if request.enable_scoring:
             msg += f" — {tier_counts['A'] + tier_counts['B']} actionable"
@@ -255,6 +331,7 @@ async def run_pipeline(run_id: str, request: SearchRequest):
         run.status = "error"
         run.error = str(e)
         cost.total = cost.leads_finder + cost.linkedin_enrichment
+        save_pipeline_run(run)
         await _emit(run_id, PipelineEvent(
             step="error", status="error",
             message=f"Pipeline failed: {e}",

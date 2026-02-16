@@ -1,17 +1,16 @@
 const STEPS = [
-  { key: 'search', label: 'Search', icon: '1' },
-  { key: 'score', label: 'Score', icon: '2' },
-  { key: 'done', label: 'Done', icon: '3' },
+  { key: 'search', label: 'Search', num: '01' },
+  { key: 'enrich', label: 'Enrich', num: '02' },
+  { key: 'score', label: 'Score', num: '03' },
+  { key: 'done', label: 'Done', num: '04' },
 ];
 
 const STEP_ORDER = STEPS.map((s) => s.key);
 
 function getStepStatus(stepKey, currentEvent) {
   if (!currentEvent) return 'pending';
-
   const currentIdx = STEP_ORDER.indexOf(currentEvent.step);
   const stepIdx = STEP_ORDER.indexOf(stepKey);
-
   if (currentEvent.step === 'error') return stepIdx <= currentIdx ? 'error' : 'pending';
   if (stepIdx < currentIdx) return 'complete';
   if (stepIdx === currentIdx) return currentEvent.status === 'complete' ? 'complete' : 'running';
@@ -22,76 +21,101 @@ export default function PipelineProgress({ currentEvent }) {
   if (!currentEvent) return null;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-4">
-        {STEPS.map((step, i) => {
+    <div className="py-8">
+      {/* Step indicators */}
+      <div className="flex items-stretch mb-8">
+        {STEPS.map((step) => {
           const status = getStepStatus(step.key, currentEvent);
           return (
-            <div key={step.key} className="flex items-center flex-1">
-              <div className="flex flex-col items-center flex-shrink-0">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
-                    status === 'complete'
-                      ? 'bg-green-500 text-white'
-                      : status === 'running'
-                      ? 'bg-blue-500 text-white animate-pulse'
-                      : status === 'error'
-                      ? 'bg-red-500 text-white'
-                      : 'bg-gray-200 text-gray-500'
-                  }`}
-                >
-                  {status === 'complete' ? '\u2713' : step.icon}
-                </div>
-                <span className={`text-xs mt-1 ${status === 'running' ? 'text-blue-600 font-medium' : 'text-gray-500'}`}>
-                  {step.label}
+            <div key={step.key} className="flex items-stretch flex-1">
+              <div className={`flex-1 p-4 border-t-4 transition-colors duration-100 ${
+                status === 'complete'
+                  ? 'border-[#075056]'
+                  : status === 'running'
+                  ? 'border-[#5acf5d]'
+                  : status === 'error'
+                  ? 'border-[#ef4444]'
+                  : 'border-[#E5E7EB]'
+              }`}>
+                <span className={`text-[10px] font-[var(--font-fore-mono)] tracking-[0.1em] ${
+                  status === 'complete' || status === 'running' ? 'text-[#075056]' : 'text-[#A3A3A3]'
+                }`}>
+                  {step.num}
                 </span>
+                <p className={`text-[11px] font-medium mt-1 uppercase tracking-[0.1em] font-[var(--font-fore-mono)] ${
+                  status === 'running' ? 'text-[#075056] font-bold' :
+                  status === 'complete' ? 'text-[#075056]' :
+                  'text-[#A3A3A3]'
+                }`}>
+                  {step.label}
+                  {status === 'complete' && ' \u2713'}
+                  {status === 'running' && ' ...'}
+                </p>
               </div>
-              {i < STEPS.length - 1 && (
-                <div
-                  className={`flex-1 h-0.5 mx-2 mt-[-12px] ${
-                    getStepStatus(STEPS[i + 1].key, currentEvent) !== 'pending'
-                      ? 'bg-green-400'
-                      : status === 'running' || status === 'complete'
-                      ? 'bg-blue-300'
-                      : 'bg-gray-200'
-                  }`}
-                />
-              )}
             </div>
           );
         })}
       </div>
 
+      {/* Progress info */}
       {currentEvent.step !== 'done' && currentEvent.step !== 'error' && (
-        <div className="text-center">
+        <div>
           {currentEvent.current && (
-            <p className="text-sm text-gray-600">{currentEvent.current}</p>
+            <p className="text-base text-black">{currentEvent.current}</p>
           )}
           {currentEvent.total > 0 && (
-            <div className="mt-2">
-              <div className="w-full bg-gray-200 rounded-full h-1.5">
+            <div className="mt-4">
+              <div className="w-full bg-[#E5E7EB] h-1 overflow-hidden rounded-none">
                 <div
-                  className="bg-blue-500 h-1.5 rounded-full transition-all"
+                  className="bg-[#075056] h-1 transition-all duration-500 ease-out"
                   style={{ width: `${(currentEvent.progress / currentEvent.total) * 100}%` }}
                 />
               </div>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-[10px] text-[#4e4f4d] mt-2 font-[var(--font-fore-mono)]">
                 {currentEvent.progress} / {currentEvent.total}
               </p>
             </div>
           )}
           {currentEvent.message && !currentEvent.current && (
-            <p className="text-sm text-gray-500">{currentEvent.message}</p>
+            <p className="text-sm text-[#4e4f4d]">{currentEvent.message}</p>
           )}
         </div>
       )}
 
       {currentEvent.step === 'error' && (
-        <p className="text-center text-sm text-red-600">{currentEvent.message}</p>
+        <p className="text-base text-[#ce4100] font-medium border-l-4 border-[#ce4100] pl-4">
+          {currentEvent.message}
+        </p>
       )}
 
       {currentEvent.step === 'done' && (
-        <p className="text-center text-sm text-green-600 font-medium">{currentEvent.message}</p>
+        <p className="text-base text-[#075056] font-medium border-l-4 border-[#075056] pl-4">
+          {currentEvent.message}
+        </p>
+      )}
+
+      {/* Cost breakdown */}
+      {currentEvent.cost && currentEvent.cost.total > 0 && (
+        <div className="mt-6 border-t border-[#E5E7EB] pt-4">
+          <p className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#4e4f4d] font-[var(--font-fore-mono)] mb-3">
+            Run Cost
+          </p>
+          <div className="flex gap-6 text-xs font-[var(--font-fore-mono)]">
+            {currentEvent.cost.leads_finder > 0 && (
+              <span className="text-[#4e4f4d]">
+                Leads Finder: <span className="text-black font-medium">${currentEvent.cost.leads_finder.toFixed(3)}</span>
+              </span>
+            )}
+            {currentEvent.cost.linkedin_enrichment > 0 && (
+              <span className="text-[#4e4f4d]">
+                Enrichment: <span className="text-black font-medium">${currentEvent.cost.linkedin_enrichment.toFixed(3)}</span>
+              </span>
+            )}
+            <span className="text-[#075056] font-bold">
+              Total: ${currentEvent.cost.total.toFixed(3)}
+            </span>
+          </div>
+        </div>
       )}
     </div>
   );

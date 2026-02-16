@@ -3,10 +3,13 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from typing import Optional
 
 import httpx
 from backend.config import APIFY_API_TOKEN
+
+logger = logging.getLogger(__name__)
 
 APIFY_BASE = "https://api.apify.com/v2"
 ACTOR_ID = "code_crafter~leads-finder"
@@ -49,6 +52,7 @@ async def run_leads_finder(
     url = f"{APIFY_BASE}/acts/{ACTOR_ID}/run-sync-get-dataset-items"
     params = {"token": APIFY_API_TOKEN}
 
+    logger.info("Leads Finder payload: %s", payload)
     async with httpx.AsyncClient(timeout=300) as client:
         resp = await client.post(
             url,
@@ -56,6 +60,8 @@ async def run_leads_finder(
             json=payload,
             headers={"Content-Type": "application/json"},
         )
+        if resp.status_code != 200:
+            logger.error("Leads Finder error %d: %s", resp.status_code, resp.text[:500])
         resp.raise_for_status()
         return resp.json()
 

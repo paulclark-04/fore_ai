@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import LeadDetail from './LeadDetail';
-
-const TIER_STYLES = {
-  A: 'bg-green-50 text-green-700 border-green-200',
-  B: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-  C: 'bg-orange-50 text-orange-700 border-orange-200',
-  D: 'bg-red-50 text-red-700 border-red-200',
-};
+import Badge from './ui/Badge';
 
 export default function ResultsTable({ results }) {
   const [sortKey, setSortKey] = useState('score');
@@ -34,29 +28,31 @@ export default function ResultsTable({ results }) {
   });
 
   const SortIcon = ({ col }) => {
-    if (sortKey !== col) return <span className="text-gray-300 ml-1">&#8597;</span>;
-    return <span className="text-blue-500 ml-1">{sortAsc ? '\u2191' : '\u2193'}</span>;
+    if (sortKey !== col) return <span className="text-[#A3A3A3] ml-1">&#8597;</span>;
+    return <span className="text-[#075056] ml-1">{sortAsc ? '\u2191' : '\u2193'}</span>;
   };
 
+  const columns = [
+    { key: 'first_name', label: 'Name' },
+    { key: 'headline', label: 'Headline' },
+    { key: 'company', label: 'Company' },
+    { key: 'score', label: 'Score' },
+    { key: 'tier', label: 'Tier' },
+    { key: 'category', label: 'Category' },
+    { key: 'email', label: 'Email' },
+  ];
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="border-t-2 border-[#075056] overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              {[
-                { key: 'first_name', label: 'Name' },
-                { key: 'headline', label: 'Headline' },
-                { key: 'company', label: 'Company' },
-                { key: 'score', label: 'Score' },
-                { key: 'tier', label: 'Tier' },
-                { key: 'category', label: 'Category' },
-                { key: 'email', label: 'Email' },
-              ].map(({ key, label }) => (
+            <tr className="border-b border-[#E5E7EB]">
+              {columns.map(({ key, label }) => (
                 <th
                   key={key}
                   onClick={() => handleSort(key)}
-                  className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:text-gray-700 select-none"
+                  className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.15em] cursor-pointer hover:text-[#075056] select-none transition-colors duration-100 font-[var(--font-fore-mono)] text-[#4e4f4d]"
                 >
                   {label}
                   <SortIcon col={key} />
@@ -64,35 +60,47 @@ export default function ResultsTable({ results }) {
               ))}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-[#E5E7EB]">
             {sorted.map((lead, idx) => (
               <>
                 <tr
                   key={idx}
                   onClick={() => setExpandedIdx(expandedIdx === idx ? null : idx)}
-                  className={`border-b border-gray-100 cursor-pointer transition-colors ${
-                    expandedIdx === idx ? 'bg-blue-50' : 'hover:bg-gray-50'
+                  className={`transition-colors duration-100 cursor-pointer ${
+                    expandedIdx === idx
+                      ? 'bg-[#F6F8F9]'
+                      : 'bg-white hover:bg-[#F6F8F9]'
                   }`}
                 >
-                  <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
+                  <td className="px-4 py-3 font-medium text-black whitespace-nowrap">
                     {lead.first_name} {lead.last_name}
                   </td>
-                  <td className="px-4 py-3 text-gray-600 max-w-[250px] truncate">{lead.headline}</td>
-                  <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{lead.company}</td>
-                  <td className="px-4 py-3 font-bold text-gray-900">{lead.score}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-xs font-bold border ${TIER_STYLES[lead.tier] || TIER_STYLES.D}`}>
-                      {lead.tier}
-                    </span>
+                  <td className="px-4 py-3 text-[#4e4f4d] max-w-[250px] truncate">
+                    {lead.headline}
                   </td>
-                  <td className="px-4 py-3 text-gray-600 text-xs">{lead.category}</td>
-                  <td className="px-4 py-3 text-gray-600 text-xs">
+                  <td className="px-4 py-3 text-[#4e4f4d] whitespace-nowrap">
+                    {lead.company}
+                  </td>
+                  <td className="px-4 py-3 font-bold text-black font-[var(--font-fore-heading)] text-2xl tracking-tighter">
+                    {lead.score}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge tier={lead.tier || 'D'}>{lead.tier}</Badge>
+                  </td>
+                  <td className="px-4 py-3 text-[#4e4f4d] text-[10px] font-[var(--font-fore-mono)] uppercase tracking-[0.1em]">
+                    {lead.category}
+                  </td>
+                  <td className="px-4 py-3 text-xs">
                     {lead.email ? (
-                      <a href={`mailto:${lead.email}`} className="text-blue-600 hover:underline" onClick={(e) => e.stopPropagation()}>
+                      <a
+                        href={`mailto:${lead.email}`}
+                        className="text-[#075056] underline underline-offset-4 hover:no-underline transition-all duration-100"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {lead.email}
                       </a>
                     ) : (
-                      <span className="text-gray-400">-</span>
+                      <span className="text-[#A3A3A3]">&mdash;</span>
                     )}
                   </td>
                 </tr>
