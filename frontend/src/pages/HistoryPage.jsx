@@ -121,7 +121,7 @@ export default function HistoryPage() {
                         {run.domains || '\u2014'}
                       </div>
                       <div className="px-4 py-3 font-bold text-black font-[var(--font-fore-heading)] text-lg tracking-tighter">
-                        {run.total_leads}
+                        {run.total_results}
                       </div>
                       <div className="px-4 py-3">
                         <div className="flex gap-1.5">
@@ -133,8 +133,8 @@ export default function HistoryPage() {
                           })}
                         </div>
                       </div>
-                      <div className="px-4 py-3 text-[#4e4f4d]">
-                        ${run.total_cost?.toFixed(3) || '0.000'}
+                      <div className="px-4 py-3 text-[#4e4f4d] font-[var(--font-fore-mono)]">
+                        {run.cost_total ? `$${run.cost_total.toFixed(2)}` : '\u2014'}
                       </div>
                       <div className="px-4 py-3">
                         <Badge

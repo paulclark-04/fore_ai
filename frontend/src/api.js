@@ -52,3 +52,37 @@ export async function getHistoricalRun(runId) {
   if (!resp.ok) throw new Error(`Failed to fetch run: ${resp.statusText}`);
   return resp.json();
 }
+
+export async function getAccounts() {
+  const res = await fetch(`${BASE}/api/accounts`);
+  if (!res.ok) throw new Error(`Accounts fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function getAccountLeads(domain, filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.tier) params.set('tier', filters.tier);
+  if (filters.min_score != null) params.set('min_score', filters.min_score);
+  if (filters.max_score != null) params.set('max_score', filters.max_score);
+  if (filters.enriched != null) params.set('enriched', filters.enriched);
+  const res = await fetch(`${BASE}/api/accounts/${encodeURIComponent(domain)}/leads?${params}`);
+  if (!res.ok) throw new Error(`Account leads fetch failed: ${res.status}`);
+  return res.json();
+}
+
+export async function updateAccountVertical(domain, vertical) {
+  const res = await fetch(`${BASE}/api/accounts/${encodeURIComponent(domain)}/vertical`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ vertical }),
+  });
+  if (!res.ok) throw new Error(`Failed to update vertical: ${res.status}`);
+  return res.json();
+}
+
+export function getAccountExportUrl(domain, filters = {}) {
+  const params = new URLSearchParams();
+  if (filters.tier) params.set('tier', filters.tier);
+  if (filters.enriched != null) params.set('enriched', filters.enriched);
+  return `${BASE}/api/accounts/${encodeURIComponent(domain)}/export/xlsx?${params}`;
+}

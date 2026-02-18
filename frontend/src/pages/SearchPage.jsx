@@ -1,65 +1,18 @@
-import { useState, useCallback } from 'react';
 import SearchForm from '../components/SearchForm';
 import PipelineProgress from '../components/PipelineProgress';
 import SummaryCards from '../components/SummaryCards';
 import ResultsTable from '../components/ResultsTable';
 import ExportButtons from '../components/ExportButtons';
-import { startSearch, subscribeEvents, getResults } from '../api';
 
-export default function SearchPage() {
-  const [isRunning, setIsRunning] = useState(false);
-  const [runId, setRunId] = useState(null);
-  const [currentEvent, setCurrentEvent] = useState(null);
-  const [summary, setSummary] = useState(null);
-  const [results, setResults] = useState([]);
-  const [error, setError] = useState(null);
-
-  const handleSearch = useCallback(async (params) => {
-    setIsRunning(true);
-    setCurrentEvent(null);
-    setSummary(null);
-    setResults([]);
-    setError(null);
-
-    try {
-      const { run_id } = await startSearch(params);
-      setRunId(run_id);
-
-      subscribeEvents(run_id, async (event) => {
-        setCurrentEvent(event);
-
-        if (event.step === 'done' && event.summary) {
-          setSummary(event.summary);
-          try {
-            const data = await getResults(run_id);
-            setResults(data.results || []);
-          } catch (e) {
-            setError(`Failed to fetch results: ${e.message}`);
-          }
-          setIsRunning(false);
-        }
-
-        if (event.step === 'done' && !event.summary) {
-          try {
-            const data = await getResults(run_id);
-            setResults(data.results || []);
-          } catch (e) {
-            setError(`Failed to fetch results: ${e.message}`);
-          }
-          setIsRunning(false);
-        }
-
-        if (event.step === 'error') {
-          setError(event.message);
-          setIsRunning(false);
-        }
-      });
-    } catch (e) {
-      setError(`Failed to start pipeline: ${e.message}`);
-      setIsRunning(false);
-    }
-  }, []);
-
+export default function SearchPage({
+  isRunning,
+  runId,
+  currentEvent,
+  summary,
+  results,
+  error,
+  onSearch,
+}) {
   return (
     <div>
       <div className="flex items-baseline justify-between mb-10">
@@ -74,7 +27,7 @@ export default function SearchPage() {
         {results.length > 0 && <ExportButtons runId={runId} />}
       </div>
 
-      <SearchForm onSearch={handleSearch} isRunning={isRunning} />
+      <SearchForm onSearch={onSearch} isRunning={isRunning} />
 
       {(isRunning || currentEvent) && (
         <PipelineProgress currentEvent={currentEvent} />

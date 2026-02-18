@@ -88,11 +88,13 @@ async def score_lead_async(lead: dict) -> dict:
                 "category": ai_result.get("category", ""),
                 "persona_label": ai_result.get("persona_label", ""),
                 "reasoning": ai_result.get("reasoning", ""),
-                "outreach_angle": ai_result.get("outreach_angle", ""),
                 "method": "AI",
+                "ai_input": ai_result.get("_profile_text", ""),
+                "ai_output": ai_result.get("_raw_response", ""),
             }
 
-    # Fallback to rules
+    # Fallback to rules — still show what data was available
+    profile_text = build_profile_text(lead)
     rules_result = await asyncio.to_thread(score_lead_sync, lead)
     return {
         "score": rules_result.get("score", 0),
@@ -100,11 +102,12 @@ async def score_lead_async(lead: dict) -> dict:
         "category": rules_result.get("category", ""),
         "persona_label": rules_result.get("persona_label", ""),
         "reasoning": rules_result.get("reasoning", ""),
-        "outreach_angle": "",
         "method": "Rules",
         "seniority": rules_result.get("seniority", ""),
         "red_flags_detail": rules_result.get("red_flags_detail", ""),
         "special_flags": rules_result.get("special_flags", ""),
+        "ai_input": profile_text,
+        "ai_output": "",
     }
 
 

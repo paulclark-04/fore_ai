@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 import unicodedata
 from typing import Dict, List, Optional
 from urllib.parse import unquote
@@ -15,7 +16,7 @@ from backend.models.schemas import (
 )
 from backend.models.data_mapper import map_apify_lead, map_linkedin_profile
 from backend.services import apify_service, linkedin_enrichment_service
-from backend.core.database import save_pipeline_run
+from backend.core.database import save_pipeline_run, upsert_account_vertical
 
 # In-memory storage for pipeline runs
 _runs: Dict[str, PipelineRun] = {}
@@ -25,6 +26,78 @@ _event_queues: Dict[str, asyncio.Queue] = {}
 LEADS_FINDER_COST_PER_LEAD = 0.002  # $2 per 1,000 leads
 LEADS_FINDER_ACTOR_RUN_FEE = 0.02  # $0.02 per actor run
 LINKEDIN_ENRICHMENT_COST_PER_PROFILE = 0.004  # $4 per 1,000 profiles
+SCORING_COST_PER_AI_CALL = 0.00042  # ~2000 input + ~200 output tokens at Gemini Flash rates
+
+TITLE_FILTER_COST_PER_CALL = 0.0003  # ~1500 input + ~100 output tokens
+
+_TITLE_FILTER_PROMPT = """You are a lead filter for Fore AI, which sells autonomous QA agents for enterprise web application testing (French market).
+
+Given these job titles from a target company, respond with ONLY a JSON array of indices to DROP.
+DROP = clearly not related to software, IT, technology, QA, engineering, product, digital, or executive decision-making.
+KEEP = anything that COULD be relevant: tech, IT, QA, product, digital, innovation, executive, CIO/DSI/CTO, or ambiguous.
+
+Be CONSERVATIVE. When in doubt, KEEP. Only drop obvious non-fits like:
+- HR, recruiting, talent acquisition
+- Marketing, brand, social media, communications
+- Graphic design, creative direction (NOT UX/product design)
+- Freelancers, independent consultants (no internal role)
+- Pure finance, accounting, legal (NOT IT audit, NOT fintech roles)
+
+KEEP all of these even if they seem broad:
+- Product owners, product managers (even non-technical)
+- Any C-level, VP, Director, Head of (they make decisions)
+- Anything with: IT, digital, tech, software, QA, test, data, cloud, DevOps, innovation, DSI, CTO, CIO
+- Ambiguous titles — when in doubt, KEEP
+
+TITLES:
+{titles_list}
+
+Respond with ONLY a JSON array of 0-based indices to drop. Example: [2, 5, 8]
+If none should be dropped, respond: []"""
+
+
+async def _ai_filter_titles(results: list, api_key: str) -> tuple:
+    """Use Gemini to batch-classify titles. Returns (kept, filtered_out) lists."""
+    titles_list = "\n".join(
+        f"{i}. {r.first_name} {r.last_name} — {r.job_title or r.headline}"
+        for i, r in enumerate(results)
+    )
+    prompt = _TITLE_FILTER_PROMPT.replace("{titles_list}", titles_list)
+
+    try:
+        from fore_ai_scorer import _get_gemini_client
+        from google.genai import types
+        import json
+
+        client = _get_gemini_client(api_key)
+        if client is None:
+            raise RuntimeError("Gemini client unavailable")
+
+        response = await asyncio.to_thread(
+            client.models.generate_content,
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                thinking_config=types.ThinkingConfig(thinking_budget=0)
+            ),
+        )
+        text = response.text.strip()
+
+        # Parse JSON array from response (handle markdown wrapping)
+        json_match = re.search(r'\[.*\]', text, re.DOTALL)
+        if not json_match:
+            logger.warning("AI title filter returned no JSON array, keeping all leads")
+            return results, []
+
+        drop_indices = set(json.loads(json_match.group()))
+
+        kept = [r for i, r in enumerate(results) if i not in drop_indices]
+        filtered_out = [r for i, r in enumerate(results) if i in drop_indices]
+        return kept, filtered_out
+
+    except Exception as e:
+        logger.warning("AI title filter failed (%s), keeping all leads", e)
+        return results, []
 
 
 def _normalize_name(first: str, last: str) -> str:
@@ -66,6 +139,11 @@ async def run_pipeline(run_id: str, request: SearchRequest):
     _event_queues[run_id] = asyncio.Queue()
 
     try:
+        # Save vertical for each domain if provided
+        if request.vertical:
+            for domain in request.company_domain:
+                upsert_account_vertical(domain, request.vertical)
+
         # ── Step 1: Apify Leads Finder ──
         domains_display = ", ".join(request.company_domain)
         await _emit(run_id, PipelineEvent(
@@ -123,6 +201,40 @@ async def run_pipeline(run_id: str, request: SearchRequest):
                 functional_level=lead.get("functional_level") or "",
                 country=lead.get("country") or "",
             ))
+
+        # ── Step 1.5b: AI-powered title filter ──
+        original_count = len(results)
+        from backend.config import GOOGLE_API_KEY as _filter_api_key
+
+        await _emit(run_id, PipelineEvent(
+            step="filter", status="running",
+            total=original_count,
+            message=f"Filtering {original_count} leads by title relevance...",
+            cost=cost,
+        ))
+
+        if _filter_api_key:
+            results, filtered_out = await _ai_filter_titles(results, _filter_api_key)
+        else:
+            filtered_out = []
+            logger.warning("No GOOGLE_API_KEY — skipping AI title filter")
+
+        if filtered_out:
+            cost.scoring += TITLE_FILTER_COST_PER_CALL
+            logger.info(
+                "AI title filter: removed %d/%d leads",
+                len(filtered_out), original_count,
+            )
+            for r in filtered_out:
+                logger.info("  Filtered: %s %s — %s", r.first_name, r.last_name, r.job_title or r.headline)
+
+        await _emit(run_id, PipelineEvent(
+            step="filter", status="complete",
+            total=original_count,
+            progress=len(results),
+            message=f"Kept {len(results)}/{original_count} leads (filtered {len(filtered_out)} non-relevant titles)",
+            cost=cost,
+        ))
 
         # ── Step 2: LinkedIn Profile Enrichment ──
         # Collect LinkedIn URLs for enrichment
@@ -248,15 +360,15 @@ async def run_pipeline(run_id: str, request: SearchRequest):
                 message="Scoring leads with AI...",
             ))
 
-            for i, result in enumerate(results):
-                name = f"{result.first_name} {result.last_name}".strip()
-                await _emit(run_id, PipelineEvent(
-                    step="score", status="running",
-                    progress=i + 1, total=len(results),
-                    current=name,
-                ))
+            # Concurrent scoring with semaphore
+            scoring_semaphore = asyncio.Semaphore(5)
+            scored_count = 0
 
-                # Build scorer-compatible dict from result + enrichment
+            async def score_one(idx, result):
+                nonlocal scored_count
+                name = f"{result.first_name} {result.last_name}".strip()
+
+                # Build scorer-compatible dict
                 result_dict = result.dict()
                 enrichment = {
                     "about": result.about,
@@ -270,33 +382,45 @@ async def run_pipeline(run_id: str, request: SearchRequest):
                 }
                 lead_for_scorer = build_enriched_lead_dict(result_dict, enrichment)
 
-                try:
-                    score_result = await scorer_service.score_lead_async(lead_for_scorer)
-                except Exception as e:
-                    score_result = {
-                        "score": 0, "tier": "D", "category": "",
-                        "persona_label": "", "reasoning": f"Scoring error: {e}",
-                        "method": "Error",
-                    }
+                async with scoring_semaphore:
+                    try:
+                        score_result = await scorer_service.score_lead_async(lead_for_scorer)
+                    except Exception as e:
+                        score_result = {
+                            "score": 0, "tier": "D", "category": "",
+                            "persona_label": "", "reasoning": f"Scoring error: {e}",
+                            "method": "Error",
+                        }
 
                 result.score = score_result.get("score") or 0
                 result.tier = score_result.get("tier") or "D"
                 result.category = score_result.get("category") or ""
                 result.persona_label = score_result.get("persona_label") or ""
                 result.reasoning = score_result.get("reasoning") or ""
-                result.outreach_angle = score_result.get("outreach_angle") or ""
                 result.method = score_result.get("method") or ""
                 result.red_flags = score_result.get("red_flags_detail") or ""
                 result.special_flags = score_result.get("special_flags") or ""
+                result.ai_input = score_result.get("ai_input") or ""
+                result.ai_output = score_result.get("ai_output") or ""
 
-                # Rate limit only actual AI (Gemini) calls
-                if score_result.get("method") == "AI":
-                    await asyncio.sleep(0.5)
+                scored_count += 1
+                await _emit(run_id, PipelineEvent(
+                    step="score", status="running",
+                    progress=scored_count, total=len(results),
+                    current=name,
+                ))
+
+            await asyncio.gather(*[score_one(i, r) for i, r in enumerate(results)])
+
+            # Calculate scoring cost
+            ai_scored_count = sum(1 for r in results if r.method == "AI")
+            cost.scoring = ai_scored_count * SCORING_COST_PER_AI_CALL
 
             await _emit(run_id, PipelineEvent(
                 step="score", status="complete",
                 total=len(results),
-                message=f"Scored {len(results)} leads",
+                message=f"Scored {len(results)} leads ({ai_scored_count} by AI)",
+                cost=cost,
             ))
 
             # Sort by score when scoring is enabled
@@ -305,7 +429,7 @@ async def run_pipeline(run_id: str, request: SearchRequest):
         # ── Step 4: Done ──
         run.results = results
         run.status = "complete"
-        cost.total = cost.leads_finder + cost.linkedin_enrichment
+        cost.total = cost.leads_finder + cost.linkedin_enrichment + cost.scoring
         run.cost = cost
 
         tier_counts = {"A": 0, "B": 0, "C": 0, "D": 0}
@@ -330,7 +454,7 @@ async def run_pipeline(run_id: str, request: SearchRequest):
     except Exception as e:
         run.status = "error"
         run.error = str(e)
-        cost.total = cost.leads_finder + cost.linkedin_enrichment
+        cost.total = cost.leads_finder + cost.linkedin_enrichment + cost.scoring
         save_pipeline_run(run)
         await _emit(run_id, PipelineEvent(
             step="error", status="error",

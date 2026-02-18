@@ -12,6 +12,7 @@ class SearchRequest(BaseModel):
     email_status: Optional[List[str]] = None
     fetch_count: int = 100
     enable_scoring: bool = False
+    vertical: Optional[str] = None
 
 
 class LeadResult(BaseModel):
@@ -42,15 +43,18 @@ class LeadResult(BaseModel):
     category: str = ""
     persona_label: str = ""
     reasoning: str = ""
-    outreach_angle: str = ""
     method: str = ""
     red_flags: str = ""
     special_flags: str = ""
+    # AI debug fields
+    ai_input: str = ""
+    ai_output: str = ""
 
 
 class CostBreakdown(BaseModel):
     leads_finder: float = 0.0
     linkedin_enrichment: float = 0.0
+    scoring: float = 0.0
     total: float = 0.0
     leads_found: int = 0
     profiles_enriched: int = 0

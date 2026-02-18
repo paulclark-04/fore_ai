@@ -85,13 +85,20 @@ export default function DashboardPage({ onNavigate }) {
             {stats.total_leads}
           </p>
         </div>
-        <div className="p-6 border-r border-[#E5E7EB]">
+        <div
+          className="p-6 border-r border-[#E5E7EB] cursor-pointer hover:bg-[#F6F8F9] transition-colors duration-100"
+          onClick={() => onNavigate?.('accounts')}
+          title="View all accounts"
+        >
           <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#4e4f4d] font-[var(--font-fore-mono)]">
             Accounts
           </span>
-          <p className="text-4xl font-bold text-black font-[var(--font-fore-heading)] tracking-tighter mt-1">
-            {stats.unique_domains}
+          <p className="text-4xl font-bold text-[#075056] font-[var(--font-fore-heading)] tracking-tighter mt-1">
+            {stats.unique_domains_count ?? (Array.isArray(stats.unique_domains) ? stats.unique_domains.length : stats.unique_domains)}
           </p>
+          <span className="text-[10px] text-[#075056] font-[var(--font-fore-mono)] mt-1 inline-block">
+            View all &rarr;
+          </span>
         </div>
         <div className="p-6 border-r border-[#E5E7EB]">
           <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-[#4e4f4d] font-[var(--font-fore-mono)]">
@@ -182,13 +189,13 @@ export default function DashboardPage({ onNavigate }) {
                       {run.created_at ? new Date(run.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '\u2014'}
                     </td>
                     <td className="px-4 py-3 text-black font-medium">
-                      {run.domains || '\u2014'}
+                      {Array.isArray(run.domains) ? run.domains.join(', ') : (run.domains || '\u2014')}
                     </td>
                     <td className="px-4 py-3 font-bold text-black font-[var(--font-fore-heading)] text-lg tracking-tighter">
-                      {run.total_leads}
+                      {run.total_results}
                     </td>
-                    <td className="px-4 py-3 text-[#4e4f4d]">
-                      ${run.total_cost?.toFixed(3) || '0.000'}
+                    <td className="px-4 py-3 text-[#4e4f4d] font-[var(--font-fore-mono)]">
+                      {run.cost_total ? `$${run.cost_total.toFixed(2)}` : '\u2014'}
                     </td>
                     <td className="px-4 py-3">
                       <Badge status={run.status === 'done' ? 'success' : run.status === 'error' ? 'error' : 'neutral'}>

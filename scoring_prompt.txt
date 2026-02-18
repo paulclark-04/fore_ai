@@ -23,6 +23,7 @@ If ANY of these apply to the CURRENT role, score 0-30 (Tier D) immediately:
 - Junior individual contributors (no budget, no decision power)
 - Consultant at an ESN firm (Capgemini, Sopra Steria, Atos, CGI, Altran, Alten, Accenture, Devoteam, Aubay, Cognizant, TCS, Wipro, Infosys, Deloitte, KPMG, EY, PwC, etc.) — they have no budget authority at client sites
   EXCEPTION: Past ESN employer is OK if person NOW works at an end-client with long tenure.
+- Freelancers / Independent consultants / Self-employed: "Freelance", "Indépendant", "Auto-entrepreneur", "Consultant indépendant", self-employed contractors. They have no internal role, no budget authority, and no decision-making power within the target company. Always D tier.
 
 CRITICAL TRAP — "CTO" at aerospace/manufacturing:
 At companies like Airbus, "CTO" means Chief Technology Officer for PHYSICAL products (wings, airframes), NOT software. Check descriptions for hardware keywords. If descriptions mention airframes, wings, structures, propulsion, mechanical engineering -> D tier.
@@ -48,26 +49,28 @@ STEP 2: CLASSIFY INTO CATEGORY
 
 If not anti-persona, classify into exactly ONE category:
 
-CATEGORY 1 — "Primary Buyer" (typically 80-100, Tier A)
-Person DIRECTLY owns or manages software QA/testing decisions. They feel the pain daily.
+CATEGORY 1 — "Primary Buyer / Decision Maker" (typically 80-100, Tier A)
+Person who DIRECTLY owns software QA/testing decisions OR is the top-level IT/innovation decision maker with no one above them to block a purchase.
 Signals:
 - Title contains: QA, Quality Assurance (software), Test Manager, Test Automation, Release Manager, Recette, Homologation, Quality Engineering (software), Engineering Productivity
 - OR: DevOps/Platform Engineering lead who owns CI/CD quality gates AND has strong software context
 - OR: VP-level Technical Product Owner delivering web applications in finance/banking with technical stack (J2EE, Spring, .NET, migration)
-Must have: decision authority (manager+, team lead, head of, VP, director) AND clear software QA/testing relevance
+- OR: CIO / DSI / Directeur des Systèmes d'Information / Directeur domaine DSI — top IT decision maker, owns software strategy and infrastructure. Score 82-92.
+- OR: CTO / DG Technologies at a target company — owns all technology decisions. Score 80-90.
+- OR: Head of Innovation / Directeur Innovation / VP Innovation — actively seeking new tech, agentic AI is exactly what they're looking for. Score 78-88.
+Must have: decision authority (manager+, team lead, head of, VP, director, C-level) AND (clear software QA/testing relevance OR top-level IT/tech authority OR innovation mandate)
 
-CATEGORY 2 — "Sponsor" (typically 60-74 Tier B, but exceptional sponsors with massive IT scope can score 80+ Tier A)
-Senior IT/digital leader who can unblock deals, allocate budget, or sponsor pilots. They OWN software platforms but do NOT own QA day-to-day. Worth a discovery outreach.
-KEY INSIGHT: "Owns platform != Owns QA." A VP IT Operations who manages ERP and Digital Workplace is a sponsor — they sit ABOVE QA and would route you to the right engineering/quality leaders rather than evaluate the product themselves.
+CATEGORY 2 — "Sponsor" (typically 60-79, Tier B)
+Senior IT/digital leader who can champion the tool, allocate budget, or sponsor pilots. They oversee software platforms but may not own QA day-to-day. Worth a discovery outreach.
+KEY INSIGHT: "Owns platform != Owns QA." A VP IT Operations who manages ERP and Digital Workplace is a sponsor — they can route you to the right engineering/quality leaders.
 Signals:
-- CTO/DSI/DG Technologies at a target company (executive sponsor — pitch transformation, not features)
 - VP/Head of IT/IM managing hundreds of applications (if scope is 500+ apps, can score A-tier)
 - Head of Cloud & DevOps (owns pipeline where QA bottlenecks live, but may not own testing decisions directly)
 - VP IT Operations managing ERP, digital workplace, hosting
 - Digital Transformation leader with actual software delivery scope
 - Innovation scout with explicit budget (euros mentioned) + mandate to pilot new tech + software/IT DNA in background
 - Senior engineering leader with software background (even if current title is broad)
-Must have: seniority (VP, Head of, Director, SVP, DG, C-level) AND software/IT context in current role
+Must have: seniority (VP, Head of, Director, SVP, DG) AND software/IT context in current role
 
 CATEGORY 3 — "Connector" (typically 40-59, Tier C)
 Adjacent role — useful to ask "who owns software quality in your org?" Not for demo outreach.
@@ -212,6 +215,6 @@ OUTPUT INSTRUCTIONS
 
 Respond with ONLY valid JSON. No markdown, no backticks, no explanation outside the JSON.
 
-{"score": <integer 0-100>, "tier": "<A|B|C|D>", "category": "<Primary Buyer|Sponsor|Connector|Procurement Gate|Not Relevant>", "persona_label": "<short 3-5 word label, e.g. QA Leadership, IT Platform Sponsor, Cloud Connector, Manufacturing Engineer>", "reasoning": "<2-3 sentences. State what the person does, why they fit or don't fit, and what specific signals drove the score. Be concrete — reference their title, company, or background.>", "outreach_angle": "<1 sentence. For A/B: how to approach them. For C: what to ask them. For D: null>"}
+{"score": <integer 0-100>, "tier": "<A|B|C|D>", "category": "<Primary Buyer|Sponsor|Connector|Procurement Gate|Not Relevant>", "persona_label": "<short 3-5 word label, e.g. QA Leadership, IT Platform Sponsor, Cloud Connector, Manufacturing Engineer>", "reasoning": "<2-3 sentences. State what the person does, why they fit or don't fit, and what specific signals drove the score. Be concrete — reference their title, company, or background.>"}
 
 Tier boundaries: A=80-100, B=60-79, C=40-59, D=0-39. Score and tier MUST be consistent.

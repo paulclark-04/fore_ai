@@ -1159,7 +1159,6 @@ def _parse_ai_response(text):
             'category': result.get('category', 'N/A'),
             'reasoning': result.get('reasoning', ''),
             'persona_label': result.get('persona_label', 'AI-scored'),
-            'outreach_angle': result.get('outreach_angle', ''),
         }
     except json.JSONDecodeError:
         # Try to extract JSON from markdown-wrapped response
@@ -1173,8 +1172,7 @@ def _parse_ai_response(text):
                     'category': result.get('category', 'N/A'),
                     'reasoning': result.get('reasoning', ''),
                     'persona_label': result.get('persona_label', 'AI-scored'),
-                    'outreach_angle': result.get('outreach_angle', ''),
-                }
+                        }
             except:
                 pass
         return None
@@ -1206,6 +1204,11 @@ def ai_score_lead_full(lead, api_key, model='gemini-2.5-flash',
         if result is None:
             name = f"{get_col(lead, 'firstName')} {get_col(lead, 'lastName')}"
             print(f"  WARNING: Could not parse AI response for {name}")
+            return None
+
+        # Attach debug info for visualization
+        result['_profile_text'] = profile_text
+        result['_raw_response'] = text
         return result
 
     except Exception as e:
@@ -1213,18 +1216,39 @@ def ai_score_lead_full(lead, api_key, model='gemini-2.5-flash',
         return None
 
 
+_gemini_client = None
+
+
+def _get_gemini_client(api_key):
+    """Return a lazily-initialized singleton Gemini client."""
+    global _gemini_client
+    if _gemini_client is None:
+        try:
+            from google import genai
+        except ImportError:
+            print("ERROR: google-genai package not installed. Run: pip install google-genai")
+            return None
+        _gemini_client = genai.Client(api_key=api_key)
+    return _gemini_client
+
+
 def _call_gemini(api_key, model, prompt):
     """Call Google Gemini API and return raw text response."""
     try:
-        from google import genai
+        from google.genai import types
     except ImportError:
         print("ERROR: google-genai package not installed. Run: pip install google-genai")
         return None
 
-    client = genai.Client(api_key=api_key)
+    client = _get_gemini_client(api_key)
+    if client is None:
+        return None
     response = client.models.generate_content(
         model=model,
         contents=prompt,
+        config=types.GenerateContentConfig(
+            thinking_config=types.ThinkingConfig(thinking_budget=1024)
+        ),
     )
     return response.text.strip()
 
@@ -1317,7 +1341,6 @@ def process_leads(input_csv, output_xlsx, api_key=None, ai_model='claude-sonnet-
                         'category': ai_result.get('category', 'N/A'),
                         'reasoning': ai_result['reasoning'],
                         'persona_label': ai_result.get('persona_label', 'AI-scored'),
-                        'outreach_angle': ai_result.get('outreach_angle', ''),
                         'seniority': '',
                         'special_flags': '',
                         'red_flags_detail': '',

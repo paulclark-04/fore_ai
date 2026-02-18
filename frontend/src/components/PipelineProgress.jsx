@@ -111,6 +111,11 @@ export default function PipelineProgress({ currentEvent }) {
                 Enrichment: <span className="text-black font-medium">${currentEvent.cost.linkedin_enrichment.toFixed(3)}</span>
               </span>
             )}
+            {currentEvent.cost.scoring > 0 && (
+              <span className="text-[#4e4f4d]">
+                Scoring: <span className="text-black font-medium">${currentEvent.cost.scoring.toFixed(3)}</span>
+              </span>
+            )}
             <span className="text-[#075056] font-bold">
               Total: ${currentEvent.cost.total.toFixed(3)}
             </span>

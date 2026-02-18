@@ -28,6 +28,7 @@ export default function SearchForm({ onSearch, isRunning }) {
   const [emailStatus, setEmailStatus] = useState(['validated']);
   const [fetchCount, setFetchCount] = useState(100);
   const [enableScoring, setEnableScoring] = useState(false);
+  const [vertical, setVertical] = useState('');
 
   // Persona presets
   const [personas, setPersonas] = useState([]);
@@ -62,6 +63,10 @@ export default function SearchForm({ onSearch, isRunning }) {
       fetch_count: fetchCount,
       enable_scoring: enableScoring,
     };
+
+    if (vertical) {
+      params.vertical = vertical;
+    }
 
     if (titleKeywords.trim()) {
       params.job_titles = titleKeywords.split(',').map((t) => t.trim()).filter(Boolean);
@@ -106,6 +111,25 @@ export default function SearchForm({ onSearch, isRunning }) {
           className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-[#075056] text-lg text-black placeholder:text-[#A3A3A3] placeholder:italic focus:border-b-[3px] focus:outline-none transition-all duration-100 rounded-none"
           required
         />
+      </div>
+
+      {/* Vertical */}
+      <div className="mb-8">
+        <label className="block text-[10px] font-medium tracking-[0.15em] uppercase text-[#4e4f4d] mb-3 font-[var(--font-fore-mono)]">
+          Vertical <span className="normal-case tracking-normal text-[#A3A3A3] font-normal">(optional)</span>
+        </label>
+        <select
+          value={vertical}
+          onChange={(e) => setVertical(e.target.value)}
+          className="w-full px-0 py-3 bg-transparent border-0 border-b-[1.5px] border-[#E5E7EB] text-base text-black focus:border-[#075056] focus:outline-none appearance-none transition-all duration-100 rounded-none cursor-pointer"
+        >
+          <option value="">-- No vertical --</option>
+          <option value="banking">Banking</option>
+          <option value="insurance">Insurance</option>
+          <option value="media">Media</option>
+          <option value="ecommerce">E-commerce</option>
+          <option value="travel">Travel</option>
+        </select>
       </div>
 
       {/* Persona Preset Selector */}

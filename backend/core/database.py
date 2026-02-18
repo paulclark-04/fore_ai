@@ -35,6 +35,7 @@ def init_db() -> None:
                 request_json TEXT,
                 cost_leads_finder        REAL DEFAULT 0.0,
                 cost_linkedin_enrichment REAL DEFAULT 0.0,
+                cost_scoring             REAL DEFAULT 0.0,
                 cost_total               REAL DEFAULT 0.0,
                 leads_found              INTEGER DEFAULT 0,
                 profiles_enriched        INTEGER DEFAULT 0,
@@ -78,13 +79,45 @@ def init_db() -> None:
                 outreach_angle TEXT DEFAULT '',
                 method       TEXT DEFAULT '',
                 red_flags    TEXT DEFAULT '',
-                special_flags TEXT DEFAULT ''
+                special_flags TEXT DEFAULT '',
+                ai_input     TEXT DEFAULT '',
+                ai_output    TEXT DEFAULT ''
             );
 
             CREATE INDEX IF NOT EXISTS idx_leads_run_id ON leads(run_id);
             CREATE INDEX IF NOT EXISTS idx_leads_tier ON leads(tier);
             CREATE INDEX IF NOT EXISTS idx_leads_company ON leads(company);
+
+            CREATE TABLE IF NOT EXISTS accounts (
+                domain   TEXT PRIMARY KEY,
+                vertical TEXT
+            );
         """)
+        # Migration: add columns if missing (for existing DBs)
+        for col, col_type in [("ai_input", "TEXT DEFAULT ''"), ("ai_output", "TEXT DEFAULT ''")]:
+            try:
+                conn.execute(f"ALTER TABLE leads ADD COLUMN {col} {col_type}")
+            except Exception:
+                pass  # Column already exists
+        # Migration: add cost_scoring column to pipeline_runs
+        try:
+            conn.execute("ALTER TABLE pipeline_runs ADD COLUMN cost_scoring REAL DEFAULT 0.0")
+        except Exception:
+            pass  # Column already exists
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def upsert_account_vertical(domain: str, vertical: Optional[str]) -> None:
+    """Insert or update the vertical for a domain in the accounts table."""
+    conn = _connect()
+    try:
+        conn.execute(
+            "INSERT INTO accounts (domain, vertical) VALUES (?, ?) "
+            "ON CONFLICT(domain) DO UPDATE SET vertical = excluded.vertical",
+            (domain.lower().strip(), vertical),
+        )
         conn.commit()
     finally:
         conn.close()
@@ -104,11 +137,11 @@ def save_pipeline_run(run: PipelineRun) -> None:
         conn.execute("""
             INSERT OR REPLACE INTO pipeline_runs
             (run_id, status, created_at, completed_at, request_json,
-             cost_leads_finder, cost_linkedin_enrichment, cost_total,
+             cost_leads_finder, cost_linkedin_enrichment, cost_scoring, cost_total,
              leads_found, profiles_enriched,
              tier_a, tier_b, tier_c, tier_d, total_results,
              error, enrichment_diagnostics_json)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             run.run_id,
             run.status,
@@ -117,6 +150,7 @@ def save_pipeline_run(run: PipelineRun) -> None:
             json.dumps(run.request.dict()) if run.request else None,
             cost.leads_finder if cost else 0.0,
             cost.linkedin_enrichment if cost else 0.0,
+            cost.scoring if cost else 0.0,
             cost.total if cost else 0.0,
             cost.leads_found if cost else 0,
             cost.profiles_enriched if cost else 0,
@@ -142,8 +176,8 @@ def save_pipeline_run(run: PipelineRun) -> None:
                  about, experience_json, education_json, skills_json,
                  languages_json, certifications_json, connections_count, enriched,
                  score, tier, category, persona_label, reasoning,
-                 outreach_angle, method, red_flags, special_flags)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 method, red_flags, special_flags, ai_input, ai_output)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 run.run_id,
                 lead.first_name,
@@ -171,10 +205,11 @@ def save_pipeline_run(run: PipelineRun) -> None:
                 lead.category,
                 lead.persona_label,
                 lead.reasoning,
-                lead.outreach_angle,
                 lead.method,
                 lead.red_flags,
                 lead.special_flags,
+                lead.ai_input,
+                lead.ai_output,
             ))
 
         conn.commit()
@@ -252,9 +287,10 @@ def get_run_with_leads(run_id: str) -> Optional[Dict[str, Any]]:
                 "category": row["category"],
                 "persona_label": row["persona_label"],
                 "reasoning": row["reasoning"],
-                "outreach_angle": row["outreach_angle"],
                 "method": row["method"],
                 "red_flags": row["red_flags"],
+                "ai_input": row["ai_input"] if "ai_input" in row.keys() else "",
+                "ai_output": row["ai_output"] if "ai_output" in row.keys() else "",
             })
 
         request = json.loads(run_row["request_json"]) if run_row["request_json"] else {}
@@ -287,6 +323,7 @@ def get_dashboard_stats() -> Dict[str, Any]:
                 COALESCE(SUM(cost_total), 0) as total_cost,
                 COALESCE(SUM(cost_leads_finder), 0) as cost_leads_finder,
                 COALESCE(SUM(cost_linkedin_enrichment), 0) as cost_linkedin_enrichment,
+                COALESCE(SUM(cost_scoring), 0) as cost_scoring,
                 COALESCE(SUM(tier_a), 0) as tier_a,
                 COALESCE(SUM(tier_b), 0) as tier_b,
                 COALESCE(SUM(tier_c), 0) as tier_c,
@@ -350,6 +387,7 @@ def get_dashboard_stats() -> Dict[str, Any]:
             "cost_breakdown": {
                 "leads_finder": round(totals["cost_leads_finder"], 2),
                 "linkedin_enrichment": round(totals["cost_linkedin_enrichment"], 2),
+                "scoring": round(totals["cost_scoring"], 2),
             },
             "tier_breakdown": {
                 "A": totals["tier_a"],
@@ -358,8 +396,161 @@ def get_dashboard_stats() -> Dict[str, Any]:
                 "D": totals["tier_d"],
             },
             "unique_domains": sorted(domains),
+            "unique_domains_count": len(domains),
             "recent_runs": recent_runs,
             "persona_stats": persona_stats,
         }
+    finally:
+        conn.close()
+
+
+def get_all_accounts() -> List[Dict[str, Any]]:
+    """Return all unique domains with aggregated lead stats."""
+    conn = _connect()
+    try:
+        # Get all runs with their request_json to extract domains
+        run_rows = conn.execute("""
+            SELECT run_id, request_json, created_at
+            FROM pipeline_runs
+            WHERE request_json IS NOT NULL
+            ORDER BY created_at DESC
+        """).fetchall()
+
+        # Build domain -> stats mapping
+        domain_stats = {}  # type: Dict[str, Dict[str, Any]]
+        for row in run_rows:
+            req = json.loads(row["request_json"])
+            domains = req.get("company_domain", [])
+            for domain in domains:
+                domain_lower = domain.lower().strip()
+                if domain_lower not in domain_stats:
+                    domain_stats[domain_lower] = {
+                        "domain": domain_lower,
+                        "total_leads": 0,
+                        "total_runs": 0,
+                        "tier_a": 0,
+                        "tier_b": 0,
+                        "tier_c": 0,
+                        "tier_d": 0,
+                        "last_run_date": None,
+                        "run_ids": [],
+                    }
+                stats = domain_stats[domain_lower]
+                stats["total_runs"] += 1
+                stats["run_ids"].append(row["run_id"])
+                if stats["last_run_date"] is None or row["created_at"] > stats["last_run_date"]:
+                    stats["last_run_date"] = row["created_at"]
+
+        # Count actual leads per domain from the leads table
+        for domain, stats in domain_stats.items():
+            if not stats["run_ids"]:
+                continue
+            placeholders = ",".join("?" * len(stats["run_ids"]))
+            lead_counts = conn.execute(f"""
+                SELECT
+                    COUNT(*) as total,
+                    SUM(CASE WHEN tier = 'A' THEN 1 ELSE 0 END) as tier_a,
+                    SUM(CASE WHEN tier = 'B' THEN 1 ELSE 0 END) as tier_b,
+                    SUM(CASE WHEN tier = 'C' THEN 1 ELSE 0 END) as tier_c,
+                    SUM(CASE WHEN tier = 'D' THEN 1 ELSE 0 END) as tier_d
+                FROM leads
+                WHERE run_id IN ({placeholders})
+            """, stats["run_ids"]).fetchone()
+            stats["total_leads"] = lead_counts["total"] or 0
+            stats["tier_a"] = lead_counts["tier_a"] or 0
+            stats["tier_b"] = lead_counts["tier_b"] or 0
+            stats["tier_c"] = lead_counts["tier_c"] or 0
+            stats["tier_d"] = lead_counts["tier_d"] or 0
+
+        # Merge verticals from accounts table
+        acct_rows = conn.execute("SELECT domain, vertical FROM accounts").fetchall()
+        vertical_map = {row["domain"]: row["vertical"] for row in acct_rows}
+        for stats in domain_stats.values():
+            stats["vertical"] = vertical_map.get(stats["domain"])
+
+        # Remove internal run_ids from output and return sorted by domain
+        results = []
+        for stats in domain_stats.values():
+            out = {k: v for k, v in stats.items() if k != "run_ids"}
+            results.append(out)
+        results.sort(key=lambda x: x["domain"])
+        return results
+    finally:
+        conn.close()
+
+
+def get_leads_by_domain(
+    domain: str,
+    tier: Optional[str] = None,
+    min_score: Optional[int] = None,
+    max_score: Optional[int] = None,
+    enriched: Optional[bool] = None,
+) -> List[Dict[str, Any]]:
+    """Return leads for a specific domain with optional filters."""
+    conn = _connect()
+    try:
+        # Find all run_ids that included this domain
+        run_rows = conn.execute(
+            "SELECT run_id, request_json FROM pipeline_runs WHERE request_json IS NOT NULL"
+        ).fetchall()
+        run_ids = []
+        for row in run_rows:
+            req = json.loads(row["request_json"])
+            domains = [d.lower().strip() for d in req.get("company_domain", [])]
+            if domain.lower().strip() in domains:
+                run_ids.append(row["run_id"])
+
+        if not run_ids:
+            return []
+
+        # Build filtered query
+        placeholders = ",".join("?" * len(run_ids))
+        query = f"SELECT * FROM leads WHERE run_id IN ({placeholders})"
+        params = list(run_ids)  # type: List[Any]
+
+        if tier:
+            query += " AND tier = ?"
+            params.append(tier.upper())
+        if min_score is not None:
+            query += " AND score >= ?"
+            params.append(min_score)
+        if max_score is not None:
+            query += " AND score <= ?"
+            params.append(max_score)
+        if enriched is not None:
+            query += " AND enriched = ?"
+            params.append(1 if enriched else 0)
+
+        query += " ORDER BY score DESC"
+
+        lead_rows = conn.execute(query, params).fetchall()
+        leads = []
+        for row in lead_rows:
+            leads.append({
+                "first_name": row["first_name"],
+                "last_name": row["last_name"],
+                "headline": row["headline"],
+                "job_title": row["job_title"],
+                "company": row["company"],
+                "linkedin_url": row["linkedin_url"],
+                "email": row["email"],
+                "score": row["score"],
+                "tier": row["tier"],
+                "category": row["category"],
+                "persona_label": row["persona_label"],
+                "reasoning": row["reasoning"],
+                "enriched": bool(row["enriched"]),
+                "run_id": row["run_id"],
+                "seniority_level": row["seniority_level"],
+                "country": row["country"],
+                "about": row["about"],
+                "experience": json.loads(row["experience_json"]) if row["experience_json"] else [],
+                "education": json.loads(row["education_json"]) if row["education_json"] else [],
+                "skills": json.loads(row["skills_json"]) if row["skills_json"] else [],
+                "method": row["method"],
+                "red_flags": row["red_flags"],
+                "outreach_angle": row["outreach_angle"] if "outreach_angle" in row.keys() else "",
+            })
+        return leads
     finally:
         conn.close()
