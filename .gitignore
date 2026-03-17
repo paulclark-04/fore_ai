@@ -31,10 +31,24 @@ Thumbs.db
 .claude/
 .skills/
 
-# Database files
+# Run data (real lead data — never commit)
+backend/data/*.json
 backend/data/runs.db
 backend/data/runs.db-shm
 backend/data/runs.db-wal
+data/
+
+# Skills (local Claude Code skills)
+skills/
+
+# Working docs / diagrams
+*.pdf
+*.excalidraw
+cowork_migration_prompt.md
+review_ca_pfm.md
+frontend_design_prompt
+fore-ai-pipeline.png
+fore_ai_pipeline.png
 
 # Temp / FUSE hidden files
 .fuse_hidden*
