@@ -25,6 +25,8 @@ class LeadResult(BaseModel):
     email: str = ""
     personal_email: str = ""
     mobile_number: str = ""
+    phone_number: str = ""
+    website: str = ""
     seniority_level: str = ""
     functional_level: str = ""
     country: str = ""

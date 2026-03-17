@@ -42,6 +42,8 @@ def map_apify_lead(lead: dict) -> dict:
         "email": lead.get("email") or "",
         "personal_email": lead.get("personal_email") or "",
         "mobile_number": lead.get("mobile_number") or "",
+        "phone_number": lead.get("company_phone") or "",
+        "website": lead.get("company_website") or "",
         "seniority_level": lead.get("seniority_level") or "",
         "functional_level": lead.get("functional_level") or "",
         "country": country,
@@ -166,6 +168,8 @@ def build_enriched_lead_dict(lead_result_dict: dict, enrichment: dict) -> dict:
     flat["email"] = lead_result_dict.get("email") or ""
     flat["personal_email"] = lead_result_dict.get("personal_email") or ""
     flat["mobile_number"] = lead_result_dict.get("mobile_number") or ""
+    flat["phone_number"] = lead_result_dict.get("phone_number") or ""
+    flat["website"] = lead_result_dict.get("website") or ""
     flat["seniority_level"] = lead_result_dict.get("seniority_level") or ""
     flat["functional_level"] = lead_result_dict.get("functional_level") or ""
     flat["country"] = lead_result_dict.get("country") or ""

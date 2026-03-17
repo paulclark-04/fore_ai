@@ -29,3 +29,21 @@ Thumbs.db
 
 # Claude
 .claude/
+.skills/
+
+# Database files
+backend/data/runs.db
+backend/data/runs.db-shm
+backend/data/runs.db-wal
+
+# Temp / FUSE hidden files
+.fuse_hidden*
+backend/data/.fuse_hidden*
+
+# Lock files
+.~lock.*
+
+# Scored output / temp HTML
+scored_*.html
+scored_*.json
+pipeline_comparison.html

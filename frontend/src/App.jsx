@@ -5,6 +5,8 @@ import DashboardPage from './pages/DashboardPage';
 import HistoryPage from './pages/HistoryPage';
 import PersonasPage from './pages/PersonasPage';
 import AccountsPage from './pages/AccountsPage';
+import WavesPage from './pages/WavesPage';
+import PipelinePage from './pages/PipelinePage';
 import { startSearch, subscribeEvents, getResults } from './api';
 
 const NAV_ITEMS = [
@@ -52,6 +54,16 @@ const NAV_ITEMS = [
     ),
   },
   {
+    id: 'waves',
+    label: 'Waves',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <path d="M1 8 C3 5, 5 5, 7 8 S11 11, 13 8 S15 5, 15 8" strokeLinecap="round" />
+        <path d="M1 11 C3 8, 5 8, 7 11 S11 14, 13 11" strokeLinecap="round" opacity="0.5" />
+      </svg>
+    ),
+  },
+  {
     id: 'personas',
     label: 'Personas',
     icon: (
@@ -61,62 +73,81 @@ const NAV_ITEMS = [
       </svg>
     ),
   },
+  {
+    id: 'pipeline',
+    label: 'Pipeline',
+    icon: (
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+        <rect x="1" y="4" width="3" height="8" rx="0.5" />
+        <rect x="6" y="2" width="3" height="10" rx="0.5" />
+        <rect x="11" y="5" width="3" height="7" rx="0.5" />
+        <line x1="4" y1="8" x2="6" y2="8" />
+        <line x1="9" y1="8" x2="11" y2="8" />
+      </svg>
+    ),
+  },
 ];
 
 function App() {
   const [currentPage, setCurrentPage] = useState('search');
 
-  // Search state — lifted here so it persists across navigation
-  const [isRunning, setIsRunning] = useState(false);
-  const [runId, setRunId] = useState(null);
-  const [currentEvent, setCurrentEvent] = useState(null);
-  const [summary, setSummary] = useState(null);
-  const [results, setResults] = useState([]);
-  const [error, setError] = useState(null);
+  // Multi-run state — keyed by run_id
+  const [runs, setRuns] = useState({});
+  // { run_id: { domain, event, results, isRunning, error } }
 
   const handleSearch = useCallback(async (params) => {
-    setIsRunning(true);
-    setCurrentEvent(null);
-    setSummary(null);
-    setResults([]);
-    setError(null);
+    const domains = params.company_domain;
 
-    try {
-      const { run_id } = await startSearch(params);
-      setRunId(run_id);
+    for (const domain of domains) {
+      const singleParams = { ...params, company_domain: [domain] };
+
+      let run_id;
+      try {
+        const res = await startSearch(singleParams);
+        run_id = res.run_id;
+      } catch (e) {
+        // Show a failed entry for this domain
+        const fakeId = `err-${domain}-${Date.now()}`;
+        setRuns((prev) => ({
+          ...prev,
+          [fakeId]: { domain, event: null, results: [], isRunning: false, error: `Failed to start: ${e.message}` },
+        }));
+        continue;
+      }
+
+      setRuns((prev) => ({
+        ...prev,
+        [run_id]: { domain, event: null, results: [], isRunning: true, error: null },
+      }));
 
       subscribeEvents(run_id, async (event) => {
-        setCurrentEvent(event);
+        setRuns((prev) => {
+          const run = prev[run_id];
+          if (!run) return prev;
+          const updated = {
+            ...run,
+            event,
+            isRunning: event.step !== 'done' && event.step !== 'error',
+            error: event.step === 'error' ? event.message : run.error,
+          };
+          return { ...prev, [run_id]: updated };
+        });
 
-        if (event.step === 'done' && event.summary) {
-          setSummary(event.summary);
+        if (event.step === 'done') {
           try {
             const data = await getResults(run_id);
-            setResults(data.results || []);
+            setRuns((prev) => ({
+              ...prev,
+              [run_id]: { ...prev[run_id], results: data.results || [] },
+            }));
           } catch (e) {
-            setError(`Failed to fetch results: ${e.message}`);
+            setRuns((prev) => ({
+              ...prev,
+              [run_id]: { ...prev[run_id], error: `Failed to fetch results: ${e.message}` },
+            }));
           }
-          setIsRunning(false);
-        }
-
-        if (event.step === 'done' && !event.summary) {
-          try {
-            const data = await getResults(run_id);
-            setResults(data.results || []);
-          } catch (e) {
-            setError(`Failed to fetch results: ${e.message}`);
-          }
-          setIsRunning(false);
-        }
-
-        if (event.step === 'error') {
-          setError(event.message);
-          setIsRunning(false);
         }
       });
-    } catch (e) {
-      setError(`Failed to start pipeline: ${e.message}`);
-      setIsRunning(false);
     }
   }, []);
 
@@ -127,31 +158,27 @@ function App() {
       case 'search':
         return (
           <SearchPage
-            isRunning={isRunning}
-            runId={runId}
-            currentEvent={currentEvent}
-            summary={summary}
-            results={results}
-            error={error}
+            runs={runs}
             onSearch={handleSearch}
+            onClearRuns={() => setRuns({})}
           />
         );
       case 'accounts':
         return <AccountsPage />;
+      case 'waves':
+        return <WavesPage />;
       case 'history':
         return <HistoryPage />;
       case 'personas':
         return <PersonasPage />;
+      case 'pipeline':
+        return <PipelinePage />;
       default:
         return (
           <SearchPage
-            isRunning={isRunning}
-            runId={runId}
-            currentEvent={currentEvent}
-            summary={summary}
-            results={results}
-            error={error}
+            runs={runs}
             onSearch={handleSearch}
+            onClearRuns={() => setRuns({})}
           />
         );
     }

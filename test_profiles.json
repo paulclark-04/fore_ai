@@ -1,0 +1,1516 @@
+[
+  {
+    "name": "Guillaume Tronche",
+    "headline": "Head of Software Quality Assurance and Release Manager at Crédit Agricole CIB",
+    "summary": "Experienced Quality Assurance Release Manager with a demonstrated history of working in the banking industry. Skilled in Agile Testing, Interest Rate Derivatives, HP QuickTest Professional (QTP), Team Foundation Server (TFS), and Agile Methodologies. Strong consulting professional graduated from EPITECH - European Institute of Technology.",
+    "location": "Greater Paris Metropolitan Region",
+    "country": "France",
+    "linkedin_url": "https://www.linkedin.com/in/guillaume-tronche-25b0a24",
+    "positions": [
+      {
+        "title": "Head of Software Quality Assurance and Release Manager",
+        "company": "Crédit Agricole CIB",
+        "duration": "11 yrs 5 mos",
+        "description": "",
+        "start": {
+          "month": 11,
+          "year": 2014
+        },
+        "end": null
+      },
+      {
+        "title": "Testing Practice Manager",
+        "company": "Vision IT Group",
+        "duration": "3 yrs 2 mos",
+        "description": "",
+        "start": {
+          "month": 9,
+          "year": 2011
+        },
+        "end": {
+          "month": 10,
+          "year": 2014
+        }
+      },
+      {
+        "title": "Testing and Automation Specialist",
+        "company": "Acial",
+        "duration": "4 yrs 8 mos",
+        "description": "",
+        "start": {
+          "month": 1,
+          "year": 2007
+        },
+        "end": {
+          "month": 8,
+          "year": 2011
+        }
+      },
+      {
+        "title": "Project Manager, Team leader User Acceptance Testing",
+        "company": "UNEO",
+        "duration": "3 yrs 5 mos",
+        "description": "",
+        "start": {
+          "month": 4,
+          "year": 2007
+        },
+        "end": {
+          "month": 8,
+          "year": 2010
+        }
+      },
+      {
+        "title": "ingénieur QA",
+        "company": "Aldata",
+        "duration": "1 yr",
+        "description": "",
+        "start": {
+          "year": 2006
+        },
+        "end": {
+          "year": 2007
+        }
+      }
+    ],
+    "education": [],
+    "skills": [
+      {
+        "name": "Testing",
+        "endorsements": 24,
+        "experiences": ""
+      },
+      {
+        "name": "User Acceptance Testing",
+        "endorsements": 13,
+        "experiences": ""
+      },
+      {
+        "name": "Quality Assurance",
+        "endorsements": 11,
+        "experiences": ""
+      },
+      {
+        "name": "Quality Center",
+        "endorsements": 8,
+        "experiences": ""
+      },
+      {
+        "name": "Test Management",
+        "endorsements": 8,
+        "experiences": ""
+      },
+      {
+        "name": "Test Planning",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Test Strategy",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Software Quality Assurance",
+        "endorsements": 8,
+        "experiences": ""
+      },
+      {
+        "name": "Test Automation",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Regression Testing",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "Agile Testing",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "QTP",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "Integration Testing",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "System Testing",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Defect Tracking",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "HP Quality Center",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Agile Methodologies",
+        "endorsements": 3,
+        "experiences": ""
+      },
+      {
+        "name": "Project Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Software Project Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Integration",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Testing",
+        "endorsements": 24,
+        "experiences": ""
+      },
+      {
+        "name": "User Acceptance Testing",
+        "endorsements": 13,
+        "experiences": ""
+      },
+      {
+        "name": "Quality Assurance",
+        "endorsements": 11,
+        "experiences": ""
+      },
+      {
+        "name": "Test Management",
+        "endorsements": 8,
+        "experiences": ""
+      },
+      {
+        "name": "Test Planning",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Test Strategy",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Software Quality Assurance",
+        "endorsements": 8,
+        "experiences": ""
+      },
+      {
+        "name": "Test Automation",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Regression Testing",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "Agile Testing",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "Integration Testing",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "System Testing",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Defect Tracking",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Agile Methodologies",
+        "endorsements": 3,
+        "experiences": ""
+      },
+      {
+        "name": "Project Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Software Project Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Integration",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Software Quality Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Interest Rate Derivatives",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Quality Center",
+        "endorsements": 8,
+        "experiences": ""
+      },
+      {
+        "name": "QTP",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "HP Quality Center",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "TFS",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Team Foundation Server (TFS)",
+        "endorsements": 0,
+        "experiences": ""
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": ""
+      },
+      {
+        "name": "Polish",
+        "proficiency": ""
+      }
+    ],
+    "certifications": [
+      {
+        "name": "ISTQB/CFTL",
+        "authority": "ISTQB® - International Software Testing Qualifications Board",
+        "timePeriod": {},
+        "issueDate": null,
+        "issuer": "ISTQB® - International Software Testing Qualifications Board"
+      }
+    ]
+  },
+  {
+    "name": "Julien R.",
+    "headline": " QA Manager",
+    "summary": "Experienced Vice President with a demonstrated history of working in the international trade and development industry. Strong professional skilled in Options, Pricing Strategy, Capital Markets, Bloomberg, and Financial Markets.",
+    "location": "Greater Paris Metropolitan Region",
+    "country": "France",
+    "linkedin_url": "https://www.linkedin.com/in/julien-r-1238869",
+    "positions": [
+      {
+        "title": "QA Test Manager",
+        "company": "Crédit Agricole CIB",
+        "duration": "10 yrs 6 mos",
+        "description": "- Elaboration and improvement of the testing coverage on the new Orchestrade software package\n- Management of the offshore team (3 people) for the execution and follow-up of test campaign\n- Analysis of results and communication to impacted teams.\n- Participation in pre-release meetings\n- Implementation of automated tests, support for technical teams\n- Monitoring and improvement of reporting tools\n- Test environment management",
+        "start": {
+          "month": 10,
+          "year": 2015
+        },
+        "end": null
+      },
+      {
+        "title": "VP",
+        "company": "Mahogany Consulting",
+        "duration": "6 yrs 6 mos",
+        "description": "- Profitability study of investment projects\n- Fund sales\n- Development of a HNWI customer base",
+        "start": {
+          "month": 9,
+          "year": 2013
+        },
+        "end": {
+          "month": 2,
+          "year": 2020
+        }
+      },
+      {
+        "title": "Interest Rate Option Broker",
+        "company": "OTCex",
+        "duration": "4 yrs 11 mos",
+        "description": "- Head of GBP vanilla and exotic business ( Swaps, Caps, Floors, Swaptions, Spread-options) \n\n- Also active on EUR and USD business\n\n- Developed the options pricing calculator for options and inflation products\n\n- Prospected in Europe, built and managed strong relationships that increase the company income",
+        "start": {
+          "month": 6,
+          "year": 2008
+        },
+        "end": {
+          "month": 4,
+          "year": 2013
+        }
+      },
+      {
+        "title": "Interest Rate Broker",
+        "company": "Tradition UK",
+        "duration": "1 yr 11 mos",
+        "description": "- Helped in the coverage and development of the relationships with inflation clients. \n\n- Performed quantitative work developing the swaption Excel calculator to keep prices up to date with a fast moving, challenging market ( Swaps, Caps, Floors, Swaptions)\n\n- Launched and tested the new options and inflation website\n",
+        "start": {
+          "month": 7,
+          "year": 2006
+        },
+        "end": {
+          "month": 5,
+          "year": 2008
+        }
+      }
+    ],
+    "education": [],
+    "skills": [
+      {
+        "name": "Financial Markets",
+        "endorsements": 6,
+        "experiences": ""
+      },
+      {
+        "name": "Options",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Derivatives",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Trading",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Fixed Income",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Bloomberg",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Investment Banking",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Structured Products",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "IR Derivatives",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Markitwire",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Pricing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Capital Markets",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Swaps",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Interest Rate Derivatives",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Financial Markets",
+        "endorsements": 6,
+        "experiences": ""
+      },
+      {
+        "name": "Options",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Derivatives",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Trading",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Fixed Income",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Investment Banking",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Structured Products",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Markitwire",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Pricing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Capital Markets",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Swaps",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Interest Rate Derivatives",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Bloomberg",
+        "endorsements": 0,
+        "experiences": ""
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": ""
+      },
+      {
+        "name": "French",
+        "proficiency": ""
+      }
+    ],
+    "certifications": [
+      {
+        "name": "ISTQB",
+        "authority": "ISTQB® - International Software Testing Qualifications Board",
+        "timePeriod": {},
+        "issueDate": null,
+        "issuer": "ISTQB® - International Software Testing Qualifications Board"
+      },
+      {
+        "name": "AMF Certification",
+        "authority": "AMF",
+        "timePeriod": {},
+        "issueDate": null,
+        "issuer": "AMF"
+      }
+    ]
+  },
+  {
+    "name": "Pavithra Rangasamy",
+    "headline": "Chef de projet CBPR+ Reporting & Statements",
+    "summary": "",
+    "location": "Courbevoie, Île-de-France, France",
+    "country": "France",
+    "linkedin_url": "https://www.linkedin.com/in/pavithra-rangasamy-98a192135",
+    "positions": [
+      {
+        "title": "",
+        "company": "Crédit Agricole CIB",
+        "duration": "1 yr 9 mos",
+        "description": "",
+        "start": {},
+        "end": null
+      },
+      {
+        "title": "",
+        "company": "Valtech",
+        "duration": "6 yrs 2 mos",
+        "description": "",
+        "start": {},
+        "end": null
+      },
+      {
+        "title": "QA Lead and Business Analyst",
+        "company": "Tata Consultancy Services",
+        "duration": "3 yrs 5 mos",
+        "description": "• Actively participate and contribute in Agile ceremonies.\n• Analyzing business requirements and creating user stories.\n• Coordinate with different assets to gather information for the right implementation.\n• Discuss the user stories with Product Owner and Development team for implementation.\n• Creation and maintenance of functional documents.\n• Coordinate the test phases (analysis, estimation, design, execution, governance).\n• Define and execute manual and automated Tests using UFT\n• Functional, SIT, regression, End to End and Data validation using SQL.\n• Generate Test summary report and KPI’s.\n• UAT coordination and Tests in Production post Go Live.",
+        "start": {
+          "month": 4,
+          "year": 2015
+        },
+        "end": {
+          "month": 8,
+          "year": 2018
+        }
+      },
+      {
+        "title": "",
+        "company": "Tata Consultancy Services",
+        "duration": "6 yrs 10 mos",
+        "description": "",
+        "start": {},
+        "end": null
+      },
+      {
+        "title": "Quality Assurance Consultant",
+        "company": "Cognizant",
+        "duration": "2 yrs 4 mos",
+        "description": "• Analyse Requirements and prepare Traceability Matrix.\n• Built test scenarios and test data.\n• Validate test environments.\n• Test Execution – Functional and Integration tests.\n• Defect Tracking – Retesting – Coordination with development team.\n• Prepare Test Summary Report",
+        "start": {
+          "month": 9,
+          "year": 2005
+        },
+        "end": {
+          "month": 12,
+          "year": 2007
+        }
+      }
+    ],
+    "education": [],
+    "skills": [
+      {
+        "name": "Cross border payments and reporting plus",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Integration Testing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "SIT",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "End to end testing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "CICD",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Testing Tools",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "KPI Dashboards",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Data Analytics",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Payments",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Business Analysis",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "scrum master",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Advanced test",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "French",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Release Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "ETL Testing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "SQL",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Data Migration",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Internal Audits",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Quality Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Failure Mode and Effects Analysis (FMEA)",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Integration Testing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "CICD",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Testing Tools",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "KPI Dashboards",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Data Analytics",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Payments",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Business Analysis",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "scrum master",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Release Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "ETL Testing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Data Migration",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Internal Audits",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Quality Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Failure Mode and Effects Analysis (FMEA)",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Lean Six Sigma",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "IT Audit",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Risk Assessment",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "System Integration Testing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Database Testing",
+        "endorsements": 0,
+        "experiences": 2
+      },
+      {
+        "name": "Requirements Analysis",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "SQL",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "JIRA",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "HP Quality Center",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Team Management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Coordinating Skills",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "French",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "SIT",
+        "endorsements": 0,
+        "experiences": ""
+      }
+    ],
+    "languages": [
+      {
+        "name": "English",
+        "proficiency": ""
+      },
+      {
+        "name": "French",
+        "proficiency": ""
+      }
+    ],
+    "certifications": [
+      {
+        "name": "Introduction to Cross border Payments",
+        "authority": "Udemy",
+        "timePeriod": {},
+        "issueDate": null,
+        "issuer": "Udemy"
+      },
+      {
+        "name": "Foundations: Data Analytics",
+        "authority": "Coursera",
+        "timePeriod": {},
+        "issueDate": null,
+        "issuer": "Coursera"
+      }
+    ]
+  },
+  {
+    "name": "Ghada Mezlini",
+    "headline": "Release Manager / QA chez CACIB",
+    "summary": "QA Analyst depuis +10 ans  durant lesquelles ,  j’ai effectué plusieurs expériences dans différents domaines fonctionnels et  techniques.Dont plusieurs années dans le domaine de finance de marché. \nMon rôle se repose sur 3 aspects : Fonctionnel / Technique  / Management qui ont évolués à travers les missions et les tâches accomplies autant dans le domaine d’intervention que sur les responsabilités.",
+    "location": "France",
+    "country": "",
+    "linkedin_url": "https://www.linkedin.com/in/ghada-mezlini-1760403a",
+    "positions": [
+      {
+        "title": " Release Manager / QA",
+        "company": "Crédit Agricole CIB",
+        "duration": "2 yrs 1 mo",
+        "description": "Skills: Exécution des tests · Tests de régression · XML · JSON · SQL · Planification des tests · CTRLM · Linux",
+        "start": {
+          "month": 3,
+          "year": 2024
+        },
+        "end": null
+      },
+      {
+        "title": "BA/ QA Automatisation ",
+        "company": "Société Générale",
+        "duration": "2 yrs",
+        "description": "Skills: Java · Exécution des tests · Tests de régression · VBA · Zephyr · Jenkins · JIRA · Planification des tests · Selenium · Automatisation des tests · Scrum",
+        "start": {
+          "month": 2,
+          "year": 2022
+        },
+        "end": {
+          "month": 1,
+          "year": 2024
+        }
+      },
+      {
+        "title": "QA Analyst / Release Manager ",
+        "company": "Crédit Agricole CIB",
+        "duration": "1 yr 4 mos",
+        "description": "Skills: Release management · Java · Exécution des tests · Tests de régression · Python · SQL · Jenkins · JIRA · Planification des tests · CTRLM · Automatisation des tests · Scrum · Linux",
+        "start": {
+          "month": 10,
+          "year": 2020
+        },
+        "end": {
+          "month": 1,
+          "year": 2022
+        }
+      },
+      {
+        "title": "QA Analyst",
+        "company": "Euronext",
+        "duration": "3 yrs 8 mos",
+        "description": "Projet « OPTIQ : MARKET DATA GETWAY » : Nouvelle plate-forme de négociation multi-marchés améliorée, offrant aux clients une flexibilité maximale, une messagerie simplifiée et harmonisée ainsi que des performances et une stabilité élevées. . Le Market Data Gateway (MDG) fournit des données de marché en temps réel pour Euronext Market: technologie multicast, latence ultra faible, conformité aux directives MiFiDII, harmonisation des messages Cash et Dérivés, flux optimisé pour chaque type de connectivité.\n\nProjet « OPTIQ : GUI - Resilience » : Application d'Opérations de contrôle du marché. Utilisé pour surveiller l'activité globale et gérer les situations d'urgence sur Optiq Market central. Gérer les entités essentielles au marché trading sur le marché, classes, instruments, firms, trades, orders,… Ainsi que la configuration des connexions des membres pour l'accès aux différents segments du marché\nMissions: \n•\tAnalyse et validation des spécifications fonctionnelles\n•\tParticipation aux réunions sur les exigences relatives aux produits et aux réunions de suivi des progrès\n•\tÉlaboration de stratégie de test\n•\tRédaction des plans de test et des scénarios de test en fonction des spécifications et des exigences fonctionnelles\n•\tExécution de tests fonctionnels \n•\tImplémentation de scripts de test automatiques\n•\tDétection des bugs et suivi des corrections\n•\tRédaction du test de rapport final (QA Rapport)\n",
+        "start": {
+          "month": 6,
+          "year": 2016
+        },
+        "end": {
+          "year": 2020
+        }
+      },
+      {
+        "title": "Senior Quality Assurance Consultant (FIS/SUNGARD)",
+        "company": "FIS",
+        "duration": "6 mos",
+        "description": "Objectif du projet : \nValidation des applications Gateways spécialisées dans le Market Data  &Trading \n\nMissions :\n\n\tParticipation à la définition et la  validation des  spécifications fonctionnelles\n\tDéfinition et mise en œuvre de stratégies de test\n\tRédaction de cahier de test fonctionnel\n\tRédaction des scripts de tests automatisés\n\tRéalisation des tests fonctionnels de non régression, tests d’intégration manuels et automatiques\n\tAnalyse et validation les anomalies de production et les demandes d’évolution (Features) des clients\n\tDétection des anomalies et suivi des corrections\n\n\tPréparation des environnements de test :\n- Installation des plateformes de tests \n- Paramétrages des outils de tests\n\tPréparation de documents de base et élaboration de rapports de suivi des projets :\n\n-Rédiger des Rapports de Tests (Acceptance Test    Report)\n-Assurer la Validation des Manuels d’installation\n-Rédiger les Releases Notes\n",
+        "start": {
+          "month": 12,
+          "year": 2015
+        },
+        "end": {
+          "month": 5,
+          "year": 2016
+        }
+      },
+      {
+        "title": "Senior Quality Assurance Consultant",
+        "company": "SunGard - now part of FIS",
+        "duration": "2 yrs 3 mos",
+        "description": "Objectif du projet : \nValidation des applications Gateways spécialisées dans le Market Data &Trading \n\nMissions :\n\n\tParticipation à la définition et la validation des spécifications fonctionnelles\n\tDéfinition et mise en œuvre de stratégies de test\n\tRédaction de cahier de test fonctionnel\n\tRédaction des scripts de tests automatisés\n\tRéalisation des tests fonctionnels de non régression, tests d’intégration manuels et automatiques\n\tAnalyse et validation les anomalies de production et les demandes d’évolution (Features) des clients\n\tDétection des anomalies et suivi des corrections\n\n\tPréparation des environnements de test :\n- Installation des plateformes de tests \n- Paramétrages des outils de tests\n\tPréparation de documents de base et élaboration de rapports de suivi des projets :\n\n-Rédiger des Rapports de Tests (Acceptance Test Report)\n-Assurer la Validation des Manuels d’installation\n-Rédiger les Releases Notes\n",
+        "start": {
+          "month": 9,
+          "year": 2013
+        },
+        "end": {
+          "month": 11,
+          "year": 2015
+        }
+      },
+      {
+        "title": "Analyste Développeur",
+        "company": "OWLIANCE",
+        "duration": "3 yrs 6 mos",
+        "description": "-Exécution des campagnes de tests\n-Exécution des tests manuels fonctionnels, et de non régression\n- Préparation des jeux de données\n- Détection des anomalies et suivi des corrections\n- Développement et la maintenance des scripts de test automatique et de chargement de jeux de donnée sous Quick Test Pro.\n-L'exécution des tests automatiques et l'analyse des résultats\n-Amélioration des tests grâce aux points de contrôle\n-Maintenance et mise à jour des scripts afin de correspondre aux différentes évolutions de l’application\n-Supervision du test et diagnostic des erreurs",
+        "start": {
+          "month": 10,
+          "year": 2009
+        },
+        "end": {
+          "month": 3,
+          "year": 2013
+        }
+      }
+    ],
+    "education": [],
+    "skills": [
+      {
+        "name": "CTRLM",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "JSON",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Planification des tests",
+        "endorsements": 0,
+        "experiences": 6
+      },
+      {
+        "name": "SQL",
+        "endorsements": 5,
+        "experiences": 4
+      },
+      {
+        "name": "Zephyr",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Automatisation des tests",
+        "endorsements": 0,
+        "experiences": 3
+      },
+      {
+        "name": "Jenkins",
+        "endorsements": 0,
+        "experiences": 2
+      },
+      {
+        "name": "JIRA",
+        "endorsements": 0,
+        "experiences": 4
+      },
+      {
+        "name": "Selenium",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Release management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Linux",
+        "endorsements": 3,
+        "experiences": 5
+      },
+      {
+        "name": "Exécution des tests",
+        "endorsements": 0,
+        "experiences": 7
+      },
+      {
+        "name": "Scrum",
+        "endorsements": 4,
+        "experiences": 5
+      },
+      {
+        "name": "Gestion de projet logiciel",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Quality Assurance",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Gestion de projet",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Méthodes agiles",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "ERP",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Consulting",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Tests de régression",
+        "endorsements": 0,
+        "experiences": 6
+      },
+      {
+        "name": "Planification des tests",
+        "endorsements": 0,
+        "experiences": 6
+      },
+      {
+        "name": "Zephyr",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Automatisation des tests",
+        "endorsements": 0,
+        "experiences": 3
+      },
+      {
+        "name": "Release management",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Exécution des tests",
+        "endorsements": 0,
+        "experiences": 7
+      },
+      {
+        "name": "Scrum",
+        "endorsements": 4,
+        "experiences": 5
+      },
+      {
+        "name": "Gestion de projet logiciel",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Quality Assurance",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Gestion de projet",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Méthodes agiles",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "ERP",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Consulting",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Tests de régression",
+        "endorsements": 0,
+        "experiences": 6
+      },
+      {
+        "name": "TestLink",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "QC 9.2",
+        "endorsements": 2,
+        "experiences": ""
+      },
+      {
+        "name": "Selenium Testing",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "JSON",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "SQL",
+        "endorsements": 5,
+        "experiences": 4
+      },
+      {
+        "name": "Jenkins",
+        "endorsements": 0,
+        "experiences": 2
+      },
+      {
+        "name": "JIRA",
+        "endorsements": 0,
+        "experiences": 4
+      },
+      {
+        "name": "Selenium",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Linux",
+        "endorsements": 3,
+        "experiences": 5
+      },
+      {
+        "name": "Python",
+        "endorsements": 0,
+        "experiences": 2
+      },
+      {
+        "name": "VBScript",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "VBA",
+        "endorsements": 0,
+        "experiences": 4
+      },
+      {
+        "name": "XML",
+        "endorsements": 0,
+        "experiences": 4
+      },
+      {
+        "name": "Java",
+        "endorsements": 0,
+        "experiences": 2
+      },
+      {
+        "name": "QTP",
+        "endorsements": 0,
+        "experiences": ""
+      }
+    ],
+    "languages": [
+      {
+        "name": "Anglais",
+        "proficiency": ""
+      },
+      {
+        "name": "Arabe",
+        "proficiency": ""
+      }
+    ],
+    "certifications": []
+  },
+  {
+    "name": "Prasad Hewa",
+    "headline": "Innovation & Digital Transformation - Crédit Agricole CIB & Founder of Ceyloners.com - customised holidays in Sri Lanka",
+    "summary": "Responsable de Projets à la Direction Informatique Groupe, en charge d'accompagner la transformation digitale et l'innovation du Groupe, en particulier sur les enjeux ressources, compétences et accompagnement au changement des collaborateurs.\n\nDiplomé IAE Poitiers en Ingénierie financière.\nMaster 2 à l'ESCE, spécialisation en Finances Internationales.\nCertification AMF.\nPast Président Rotaract Club Paris Haussmann - financement de projets caritatifs en Inde, Sri Lanka, Maroc, France, Cap Vert et Népal.\n\nSpécialités & appétences : Organisation & Transformation des départements, méthodes agiles, Design Thinking, efficacité opérationnelle, développement des collaborateurs, finance de marché, Lean Management, relation client",
+    "location": "Rueil-Malmaison, Île-de-France, France",
+    "country": "France",
+    "linkedin_url": "https://www.linkedin.com/in/prasad-hewa-3b80b71b",
+    "positions": [
+      {
+        "title": "Innovation & Digital Transformation",
+        "company": "Crédit Agricole CIB",
+        "duration": "3 yrs 2 mos",
+        "description": "",
+        "start": {
+          "month": 2,
+          "year": 2023
+        },
+        "end": null
+      },
+      {
+        "title": "Chief of Staff",
+        "company": "Crédit Agricole Group Infrastructure Platform",
+        "duration": "2 yrs 4 mos",
+        "description": "",
+        "start": {
+          "month": 11,
+          "year": 2020
+        },
+        "end": {
+          "month": 2,
+          "year": 2023
+        }
+      },
+      {
+        "title": "Responsable de projet Direction Informatique Groupe",
+        "company": "Crédit Agricole S.A.",
+        "duration": "1 yr 7 mos",
+        "description": "Systèmes d'information Groupe / Gouvernance, Transformation, Pilotage ",
+        "start": {
+          "month": 5,
+          "year": 2019
+        },
+        "end": {
+          "month": 11,
+          "year": 2020
+        }
+      },
+      {
+        "title": "",
+        "company": "Crédit Agricole CIB",
+        "duration": "5 yrs 8 mos",
+        "description": "",
+        "start": {},
+        "end": null
+      },
+      {
+        "title": "IRD Trade Support",
+        "company": "HSBC",
+        "duration": "7 mos",
+        "description": "",
+        "start": {
+          "month": 3,
+          "year": 2013
+        },
+        "end": {
+          "month": 9,
+          "year": 2013
+        }
+      },
+      {
+        "title": "Production Support on Risk and Valuation Applications",
+        "company": "Société Générale CIB",
+        "duration": "6 mos",
+        "description": "",
+        "start": {
+          "month": 9,
+          "year": 2012
+        },
+        "end": {
+          "month": 2,
+          "year": 2013
+        }
+      },
+      {
+        "title": "",
+        "company": "Credit Agricole CIB",
+        "duration": "2 yrs",
+        "description": "",
+        "start": {},
+        "end": null
+      },
+      {
+        "title": "Assistant Analyste Financier",
+        "company": "SEPT - Société d'Etudes, de Projets et de Transactions",
+        "duration": "1 yr",
+        "description": "- Prospection commerciale.\n- Etude de projets d’entreprise : analyse financière, commerciale et marketing.\n- Recommandations et préconisations.\n- Développement d’entreprise au niveau international.",
+        "start": {
+          "month": 5,
+          "year": 2009
+        },
+        "end": {
+          "month": 4,
+          "year": 2010
+        }
+      },
+      {
+        "title": "Assistant Commercial",
+        "company": "Caisse d'Epargne Ile-de-France",
+        "duration": "1 yr 1 mo",
+        "description": "- Gestion client\n- Prospection commerciale\n- Promotion et vente de nouveaux produits &amp; services bancaires",
+        "start": {
+          "month": 8,
+          "year": 2007
+        },
+        "end": {
+          "month": 8,
+          "year": 2008
+        }
+      },
+      {
+        "title": "Stagiaire en comptabilité",
+        "company": "Sofitel Paris",
+        "duration": "2 mos",
+        "description": "- Gestion et Comptabilité.\n- Création de factures pour les fournisseurs.",
+        "start": {
+          "month": 1,
+          "year": 2003
+        },
+        "end": {
+          "month": 2,
+          "year": 2003
+        }
+      }
+    ],
+    "education": [],
+    "skills": [
+      {
+        "name": "Summit FT",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Calypso",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Swapswire",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Murex",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Kondor+",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Project Management",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Fixed Income",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Banque d'investissement",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "Marché financier",
+        "endorsements": 7,
+        "experiences": ""
+      },
+      {
+        "name": "Calypso",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Murex",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Kondor+",
+        "endorsements": 0,
+        "experiences": ""
+      },
+      {
+        "name": "Project Management",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Fixed Income",
+        "endorsements": 5,
+        "experiences": ""
+      },
+      {
+        "name": "Banque d'investissement",
+        "endorsements": 4,
+        "experiences": ""
+      },
+      {
+        "name": "Marché financier",
+        "endorsements": 7,
+        "experiences": ""
+      },
+      {
+        "name": "Swapswire",
+        "endorsements": 0,
+        "experiences": ""
+      }
+    ],
+    "languages": [
+      {
+        "name": "Anglais",
+        "proficiency": ""
+      },
+      {
+        "name": "Cingalais",
+        "proficiency": ""
+      }
+    ],
+    "certifications": [
+      {
+        "name": "AMF - Autorité des Marchés Financiers",
+        "authority": "",
+        "timePeriod": {},
+        "issueDate": null,
+        "issuer": ""
+      }
+    ]
+  },
+  {
+    "name": "David Dubuis",
+    "headline": "Quantum & Innovation Leader chez Crédit Agricole CIB",
+    "summary": "",
+    "location": "Montrouge, Île-de-France, France",
+    "country": "France",
+    "linkedin_url": "https://www.linkedin.com/in/david-dubuis",
+    "positions": [
+      {
+        "title": "",
+        "company": "Crédit Agricole CIB",
+        "duration": "3 yrs 6 mos",
+        "description": "",
+        "start": {},
+        "end": null
+      },
+      {
+        "title": "Innovation",
+        "company": "Crédit Agricole Group Infrastructure Platform",
+        "duration": "3 yrs 10 mos",
+        "description": "",
+        "start": {
+          "month": 1,
+          "year": 2019
+        },
+        "end": {
+          "month": 10,
+          "year": 2022
+        }
+      },
+      {
+        "title": "",
+        "company": "CA-SILCA",
+        "duration": "4 yrs 1 mo",
+        "description": "",
+        "start": {},
+        "end": null
+      }
+    ],
+    "education": [],
+    "skills": [],
+    "languages": [],
+    "certifications": []
+  }
+]

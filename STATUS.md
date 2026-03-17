@@ -133,7 +133,7 @@ Company Domain + Filters
 
 | Step | Cost per 1,000 | 10 Leads (tested) | 100 Leads (est.) |
 |------|----------------|--------------------|--------------------|
-| Leads Finder | $1.50 | $0.015 | $0.15 |
+| Leads Finder | $2 | $0.02 | $0.2 |
 | LinkedIn Enrichment | $4.00 | $0.040 | $0.40 |
 | AI Scoring (Gemini) | ~$2.20 (Haiku equiv.) | TBD | TBD |
 | **Total** | **~$7.70** | **$0.055** | **~$0.55** |

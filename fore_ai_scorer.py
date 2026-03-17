@@ -79,6 +79,9 @@ KW_SOFTWARE_CONTEXT = [
     'e-commerce', 'e-banking', 'portail', 'portal', 'online',
     'release', 'pipeline', 'testing', 'automation', 'continuous',
     'integration', 'banking', 'banque', 'fintech',
+    'data engineering', 'data science', 'data analytics', 'data pipeline',
+    'machine learning', 'intelligence artificielle', 'artificial intelligence',
+    'mlops', 'dataops', 'analytics platform', 'data platform',
 ]
 
 # QA automation tools (buying signal — they already use automation)
@@ -164,6 +167,104 @@ KW_RED_HARDWARE = [
     'tolerancing', 'outillage', 'aérodynamique', 'aerodynamics',
     'structural engineer', 'metallurg', 'tooling engineer',
     'co-working space', 'wing manufacturing',
+]
+
+# Titles unambiguously from non-tech domains — skip AI, auto-assign rules score.
+# Conservative: only roles where software QA relevance is essentially zero.
+# Checked against title_blob (headline + current position title) only.
+KW_OBVIOUSLY_IRRELEVANT = [
+    # HR / People
+    'human resources', 'ressources humaines', 'talent acquisition',
+    'talent management', 'recrutement', 'chro', 'chief human',
+    'responsable rh', 'hr manager', 'hr director',
+    'people & culture', 'people and culture',
+    # Marketing (non-tech — "Marketing Technology Manager" is overridden by KW_TECH_MODIFIERS)
+    'brand manager', 'brand director', 'directeur de marque',
+    'content manager', 'content creator', 'content strategist',
+    'copywriter', 'community manager', 'social media manager',
+    'social media director', 'marketing manager', 'directeur marketing',
+    'chief marketing', 'responsable marketing',
+    # Design / Creative (UX/product designers intentionally excluded)
+    'graphic designer', 'graphiste', 'art director', 'directeur artistique',
+    'creative director', 'directeur créatif', 'motion designer',
+    'illustrateur', 'illustrator',
+    # Legal
+    'general counsel', 'legal director', 'directeur juridique',
+    'responsable juridique', 'lawyer', 'avocat', 'notaire', 'juriste',
+    'legal counsel', 'chief legal',
+    # Finance / Accounting / Treasury
+    'chief financial officer', 'directeur financier',
+    'financial controller', 'contrôleur de gestion', 'accountant',
+    'comptable', 'treasurer', 'trésorier', 'responsable comptable',
+    'responsable financier', 'head of finance', 'finance director',
+    'chief financial',
+    # PR / Communications (non-digital)
+    'public relations', 'relations publiques', 'responsable communication',
+    'head of communications', 'directeur de la communication',
+    'press officer', 'attaché de presse',
+    # Facilities / Real Estate
+    'facilities manager', 'facility manager', 'gestionnaire immobilier',
+    'responsable immobilier', 'head of facilities',
+    # Procurement / Purchasing (non-IT)
+    'directeur des achats', 'responsable achats',
+    'purchasing manager', 'procurement manager',
+    # Health / Safety (non-software)
+    'médecin', 'infirmier', 'infirmière', 'pharmacien',
+    'responsable santé sécurité', 'hse manager',
+    'health and safety', 'hygiène sécurité',
+]
+
+# Short tokens requiring has_word() to avoid substring matches
+# (e.g., 'drh' inside 'sous-drh', 'cmo' inside 'ecommerce')
+KW_OBVIOUSLY_IRRELEVANT_WORD = [
+    'chro', 'drh', 'cmo', 'cfo', 'clo', 'qhse',
+]
+
+# Commercial/CX "digital" role indicators — NOT software engineering or QA
+# In retail (e.g., Boulanger), "digital" often means customer experience or e-commerce strategy.
+# These titles have no software delivery ownership despite "digital" or "innovation" keywords.
+KW_COMMERCIAL_ROLE = [
+    'commerce digital', 'directeur commerce', 'responsable commerce',
+    'expérience client', 'satisfaction client',
+    'expérience et exploitation', 'expérience digitale',
+    'directeur offre', 'directrice offre', 'responsable offre',
+    'business owner satisfaction', 'business unit director',
+]
+
+# Innovation signals that require STRONG tech/startup signals (not just generic "innovation")
+# Used to prevent commercial product-offer "innovation" from triggering the innovation scout layer.
+KW_INNOVATION_STRONG = [
+    'startup', 'scouting', 'partnerships with tech',
+    'partenariats avec des startups', 'veille technologique',
+    'incubat', 'accelerat',
+]
+
+# Revenue/business-focused product role signals (not software QA relevant)
+KW_REVENUE_FOCUS = [
+    'revenue growth', 'croissance du chiffre', 'conversion rate', 'taux de conversion',
+    'monetis', 'monétis', 'p&l', 'ltv', 'arpu', 'acquisition funnel',
+    'upsell', 'cross-sell', 'churn reduction', 'b2c monetis', 'b2c revenue',
+    'subscription revenue', 'revenu abonnement',
+]
+
+# Non-France location signals (French market only)
+KW_NON_FRENCH_LOCATIONS = [
+    'united states', 'united kingdom', 'germany', 'deutschland',
+    'spain', 'españa', 'italy', 'italia', 'netherlands', 'nederland',
+    'canada', 'australia', 'india', 'singapore', 'dubai',
+    'united arab emirates', ', us', ', usa', ', uk',
+    'new york', 'london', 'berlin', 'madrid', 'amsterdam',
+    'toronto', 'sydney', 'bangalore', 'mumbai', 'hong kong',
+]
+
+# If ANY of these appear in title_blob, override the irrelevant match.
+# Intentionally excludes bare 'digital' — "Digital Marketing" is still irrelevant.
+KW_TECH_MODIFIERS = [
+    'technology', 'technologie', 'informatique',
+    "système d'information", "systèmes d'information",
+    'information system', 'logiciel', 'software',
+    'data', 'cloud', 'platform', 'plateforme',
+    'digital transformation', 'transformation digitale',
 ]
 
 # Seniority keywords by level
@@ -301,6 +402,11 @@ def extract_all_text(lead):
     past_company_2 = s(get_col(lead, 'experience/2/companyName'))
 
     exp0_duration = s(get_col(lead, 'experience/0/duration'))
+    exp0_location = s(get_col(lead, 'experience/0/location'))
+    exp0_employment_type = s(get_col(lead, 'experience/0/employmentType',
+                                      'experience/0/employment_type'))
+    # The company the lead was *searched for* (from Leads Finder), vs current LinkedIn employer
+    searched_company = s(get_col(lead, 'company', 'Company'))
 
     # Scoped text blobs
     title_blob = f"{headline} {current_pos}"
@@ -322,6 +428,9 @@ def extract_all_text(lead):
         'past_pos_2': past_pos_2, 'past_desc_2': past_desc_2,
         'past_company_2': past_company_2,
         'exp0_duration': exp0_duration,
+        'exp0_location': exp0_location,
+        'exp0_employment_type': exp0_employment_type,
+        'searched_company': searched_company,
     }
 
 
@@ -348,6 +457,27 @@ def score_persona(t):
             past_qa = has(t['past_blob'], KW_QA_TITLE + ['testing', 'test ', 'qa ', 'quality assurance'])
             bonus = 5 if past_qa else 0
             return min(40, 35 + bonus), 'Direct QA/Test leadership'
+
+    # ── Layer 1.5: Technical Program/Project Manager with QA automation background ──
+    # A TPM who was previously a hands-on test automation engineer understands QA pain
+    # at the deepest level — near-primary buyer.
+    if has(title, ['technical program manager', 'programme technique',
+                    'tpm', 'program manager', 'chef de programme']):
+        test_automation_past = (
+            has(t['past_blob'], ['test automation', 'automatisation des tests',
+                                  'test engineer', 'ingénieur test', 'sdet',
+                                  'software development engineer in test',
+                                  'qa engineer', 'quality engineer'])
+            or has(t['about'], ['automated testing', 'test automation',
+                                 'automatisation des tests'])
+        )
+        if test_automation_past:
+            # Include about section — TPMs often describe their work there
+            software_ctx = has(t['current_blob'] + ' ' + t['all_skills'] + ' ' + t['about'],
+                               KW_SOFTWARE_CONTEXT + ['automated testing', 'test automation',
+                                                       'automatisation des tests'])
+            if software_ctx:
+                return 35, 'Technical Program Manager with QA automation background'
 
     # ── Layer 2: DevOps/CI-CD pipeline ownership ──
     if has(title, KW_DEVOPS_TITLE):
@@ -381,6 +511,24 @@ def score_persona(t):
 
     # ── Layer 4: C-Level with Technology/Operations scope ──
     if has_word(title, KW_SENIORITY_CLEVEL):
+        # CPO / Chief Product Officer owns product quality at software companies
+        # Unlike "Chief Technology Officer", CPO scope is always the product (web app / platform)
+        is_cpo = has(title, ['chief product officer']) or has_word(title, ['cpo'])
+        if is_cpo and has(current + ' ' + full, KW_SOFTWARE_CONTEXT):
+            return 30, 'CPO executive sponsor (product quality owner)'
+
+        # CDO / Chief Data Officer / CDAO — data & AI executives
+        # Tightly linked to software quality: data pipelines, data engineering, ML platform.
+        # Must be assessed as an executive sponsor, not lumped into "C-Level unclear scope".
+        is_cdo = (
+            has(title, ['chief data officer', 'chief data & ai', 'chief data and ai',
+                        'chief data', 'chief ai officer', 'chief analytics officer',
+                        'chief artificial intelligence'])
+            or has_word(title, ['cdo', 'cdao'])
+        )
+        if is_cdo:
+            return 28, 'CDO/Chief Data Officer (data & AI executive sponsor)'
+
         tech_ops = has(current, ['technologies', 'opérations', 'operations',
                                   'systèmes d\'information', 'information system',
                                   'it ', 'numérique', 'technique'])
@@ -394,7 +542,16 @@ def score_persona(t):
         return 15, 'C-Level (unclear tech scope)'
 
     # ── Layer 5: Innovation/Startup scout with budget ──
-    if has(full, KW_INNOVATION):
+    # Require STRONG innovation signals (startup, scouting, POC, partnerships).
+    # Generic "innovation" alone is too common in retail/commercial contexts
+    # (e.g., "Directeur de l'innovation de l'Offre" = product category innovation, not tech).
+    # Also exclude commercial/CX roles even if they have tech-adjacent descriptions.
+    is_commercial_l5 = has(title, KW_COMMERCIAL_ROLE)
+    has_strong_innov = has(full, KW_INNOVATION_STRONG)
+    # Weak signals (innovation, poc, pilot) only trigger if current title has software context
+    has_weak_innov = has(full, ['innovation', 'poc', 'proof of concept', 'pilot'])
+    if not is_commercial_l5 and (has_strong_innov or
+                                  (has_weak_innov and has(title, KW_SOFTWARE_CONTEXT))):
         budget_signals = has(full, ['budget', '€', 'million', 'roadmap',
                                      'leads a', 'team of', 'équipe'])
         software_past = has(t['past_blob'] + ' ' + skills, KW_SOFTWARE_CONTEXT)
@@ -405,7 +562,12 @@ def score_persona(t):
         return 12, 'Innovation mention (no clear budget)'
 
     # ── Layer 6: Technical Product Owner/Manager for web apps ──
-    if has(title, ['product owner', 'product manager', 'chef de produit']):
+    if has(title, ['product owner', 'product manager', 'chef de produit', 'head of product']):
+        # Exclude CX/UX product roles — "Expérience Digitale", "Self&Care", customer journey
+        # Product managers in these domains own customer experience metrics, not software delivery.
+        if has(title, KW_COMMERCIAL_ROLE + ['self&care', 'self care', 'parcours client',
+                                             'customer journey']):
+            return 5, 'CX/UX Product Manager (customer experience, not software delivery)'
         web_context = has(full, ['web', 'application', 'portal', 'portail',
                                   'e-commerce', 'e-banking', 'platform', 'saas'])
         technical = has(full + ' ' + skills, ['j2ee', 'java', 'spring',
@@ -419,9 +581,13 @@ def score_persona(t):
 
     # ── Layer 7: Digital Transformation with software context ──
     # Exclude "digital" when paired with fraud/security/compliance
+    # Also exclude commercial/CX "digital" roles (Boulanger pattern: "Directeur Commerce Digital",
+    # "Directeur Expérience et Exploitation Digitale" = business roles, not software transformation)
     digital_is_valid = has(title, KW_DIGITAL_TITLE) and not has(title,
         ['fraud', 'fraude', 'cyber', 'security', 'sécurité', 'compliance'])
     if digital_is_valid:
+        if has(title, KW_COMMERCIAL_ROLE):
+            return 5, 'Commercial/CX digital role (not software transformation)'
         software_ctx = has(current + ' ' + about + ' ' + skills,
                            KW_SOFTWARE_CONTEXT)
         if software_ctx:
@@ -466,6 +632,9 @@ def score_seniority(t):
     if has(title, KW_SENIORITY_HEAD):
         return 14, 'Head of/Responsable'
     if has(title, KW_SENIORITY_MANAGER):
+        # Senior/Staff/Lead/Principal PM or Manager → slight bonus over regular Manager
+        if has(title, ['senior', 'principal', 'staff ']):
+            return 13, 'Senior Manager/Lead'
         return 10, 'Manager/Lead'
     # Check if senior IC with management scope
     if has(title, ['senior', 'principal', 'staff']):
@@ -617,6 +786,37 @@ def score_red_flags(t):
             penalty += hw_penalty
             flags.append('Physical/hardware engineering (no software context)')
 
+    # ── Geography: French market only ──
+    exp0_loc = t.get('exp0_location', '')
+    if exp0_loc and has(exp0_loc, KW_NON_FRENCH_LOCATIONS):
+        penalty += 60
+        flags.append(f'Located outside France ({exp0_loc}) — French market only')
+
+    # ── Left target company ──
+    # Compare the company we searched for (from Leads Finder) vs current LinkedIn employer.
+    # If they differ, this person has moved on — don't target them at the old company.
+    searched_co = t.get('searched_company', '')
+    current_co = t.get('current_company', '')
+    if searched_co and current_co:
+        def _norm_co(c):
+            return re.sub(r'[^a-z0-9]', '', c.lower())
+        ns, nc = _norm_co(searched_co), _norm_co(current_co)
+        if ns and nc and ns not in nc and nc not in ns:
+            penalty += 50
+            flags.append(f'No longer at target company (now at {current_co})')
+
+    # ── Self-employed / coaching signals in headline ──
+    # Belt-and-suspenders for when Leads Finder data is stale but headline is updated.
+    already_left = any('no longer at target company' in f.lower() for f in flags)
+    ex_title_pat = (r'\bex[-\u2013]\s*'
+                    r'(head|vp|cto|cpo|coo|cio|director|directeur|'
+                    r'manager|lead|chief|responsable)')
+    is_ex_title = bool(re.search(ex_title_pat, t['headline']))
+    is_helping = bool(re.search(r'\bi help\b', t['headline']))
+    if (is_ex_title or is_helping) and not already_left:
+        penalty += 40
+        flags.append('Self-employed/coaching signals in headline (ex- prefix or coaching framing)')
+
     # ── Consultant/ESN detection ──
     # Only flag CURRENT employer as ESN. Past ESN is OK if current is different.
     is_esn = False
@@ -636,18 +836,54 @@ def score_red_flags(t):
         penalty += 15
         flags.append(f'Likely consultant/ESN ({esn_name})')
 
+    # ── Intern / student detection ──
+    emp_type = t.get('exp0_employment_type', '')
+    if has(emp_type, ['internship', 'intern', 'stagiaire', 'alternance',
+                       'apprentissage', 'work study', 'work-study']):
+        penalty += 50
+        flags.append('Current role is internship/work-study (no decision authority)')
+    # Graduation year in headline: "'25", "25'", "class of 2025", etc.
+    grad_year_pat = re.compile(r"['\u2019]2[4-9]|2[4-9]['\u2019]"
+                                r"|\bclass of 20(2[4-9]|3[0-2])\b")
+    if grad_year_pat.search(t['headline']):
+        penalty += 50
+        flags.append('Recent graduate/student (graduation year in headline)')
+
     # ── Zero software DNA across entire profile ──
     if not has(full + ' ' + t['all_skills'] + ' ' + t['about'],
                KW_SOFTWARE_CONTEXT + KW_SOFTWARE_SKILLS):
         penalty += 20
         flags.append('No software/web/digital signals anywhere in profile')
 
+    # ── Business/revenue-focused product role ──
+    # A Head/PM of Product focused on revenue growth, CRO, or monetisation owns
+    # business metrics — not software quality. Different budget, different pain.
+    is_product_role = has(t['title_blob'], ['product owner', 'product manager',
+                                             'chef de produit', 'head of product',
+                                             'chief product'])
+    if is_product_role:
+        revenue_count = count(t['full_blob'] + ' ' + t['about'], KW_REVENUE_FOCUS)
+        revenue_in_title = has(t['title_blob'] + ' ' + t['headline'],
+                               ['revenue', 'growth', 'conversion', 'monetis',
+                                'acquisition', 'circularity revenue'])
+        if revenue_count >= 2:
+            penalty += 15
+            flags.append('Product role focused on revenue/conversion (not software QA)')
+        elif revenue_count >= 1 and revenue_in_title:
+            penalty += 10
+            flags.append('Product role with revenue/growth focus (limited QA relevance)')
+
     # ── Recency rule: past relevant, current not ──
     # If current role has red flags but past roles were relevant, still penalize
     # (current role trumps past history)
     if penalty == 0:
         past_relevant = has(t['past_blob'], KW_QA_TITLE + KW_DEVOPS_TITLE)
-        current_irrelevant = not has(current, KW_SOFTWARE_CONTEXT + KW_QA_TITLE + KW_DEVOPS_TITLE)
+        # Check current relevance broadly: include about + skills, not just current_blob
+        # (TPMs and technical leaders often describe current work in About section)
+        current_irrelevant = not has(current + ' ' + t['about'] + ' ' + t['all_skills'],
+                                     KW_SOFTWARE_CONTEXT + KW_QA_TITLE + KW_DEVOPS_TITLE
+                                     + ['automated testing', 'test automation', 'program manager',
+                                        'technical program', 'delivery', 'release'])
         if past_relevant and current_irrelevant:
             penalty += 10
             flags.append('Moved away from relevant role (current role differs)')
@@ -855,7 +1091,7 @@ def write_output_xlsx(results, output_path):
     wrap_align = Alignment(vertical='top', wrap_text=True)
 
     for row_idx, r in enumerate(results, 2):
-        method_label = 'AI' if 'ai' in str(r.get('method', '')) else 'Rules'
+        method_label = 'AI' if 'ai' in str(r.get('method', '')).lower() else 'Rules'
         category = r.get('category', 'N/A')
         row_data = [
             r['firstName'], r['lastName'], r['linkedinUrl'], r['headline'],
@@ -904,7 +1140,7 @@ def write_output_xlsx(results, output_path):
         # Style the Method cell (column 9)
         method_cell = ws.cell(row=row_idx, column=9)
         method_cell.alignment = Alignment(horizontal='center', vertical='top')
-        if 'ai' in str(r.get('method', '')):
+        if 'ai' in str(r.get('method', '')).lower():
             method_cell.font = Font(name='Arial', size=10, color='7030A0')  # Purple for AI
         else:
             method_cell.font = Font(name='Arial', size=10, color='2F5496')  # Blue for rules
@@ -942,8 +1178,8 @@ def write_output_xlsx(results, output_path):
     ws2['B9'] = sum(1 for r in results if r['tier'] in ('A', 'B'))
     ws2['B9'].font = Font(name='Arial', bold=True, size=12, color='006100')
     # Method stats
-    rules_count = sum(1 for r in results if r.get('method', 'rules') == 'rules')
-    ai_count = sum(1 for r in results if r.get('method') == 'ai')
+    rules_count = sum(1 for r in results if 'ai' not in str(r.get('method', '')).lower())
+    ai_count = sum(1 for r in results if 'ai' in str(r.get('method', '')).lower())
     ws2['A11'] = 'Scoring Method:'
     ws2['A11'].font = Font(name='Arial', bold=True, size=10, color='2F5496')
     ws2['A12'] = 'Rules-based:'
@@ -968,6 +1204,45 @@ def write_output_xlsx(results, output_path):
     ws2['A15'].font = Font(name='Arial', bold=True, size=10, color='2F5496')
     ws2.column_dimensions['A'].width = 25
     ws2.column_dimensions['B'].width = 12
+
+    # ── Outreach sheet ──
+    ws3 = wb.create_sheet('Outreach')
+    outreach_headers = [
+        'First Name', 'Last Name', 'Title', 'Organization',
+        'Email', 'Mobile Phone number', 'Phone number',
+        'Linkedin Profile URL', 'Website', 'Country',
+    ]
+    for col_idx, header in enumerate(outreach_headers, 1):
+        cell = ws3.cell(row=1, column=col_idx, value=header)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = header_align
+        cell.border = thin_border
+
+    for row_idx, r in enumerate(results, 2):
+        row_data = [
+            r['firstName'],
+            r['lastName'],
+            r.get('job_title') or r.get('experience/0/position') or '',
+            r.get('company') or r.get('currentPosition/0/companyName') or '',
+            r.get('email') or '',
+            r.get('mobile_number') or '',
+            r.get('phone_number') or '',
+            r['linkedinUrl'],
+            r.get('website') or '',
+            r.get('country') or '',
+        ]
+        for col_idx, val in enumerate(row_data, 1):
+            cell = ws3.cell(row=row_idx, column=col_idx, value=val)
+            cell.font = body_font
+            cell.alignment = Alignment(vertical='top')
+            cell.border = thin_border
+
+    outreach_col_widths = {1: 14, 2: 16, 3: 35, 4: 25, 5: 30, 6: 18, 7: 18, 8: 40, 9: 30, 10: 12}
+    for col, width in outreach_col_widths.items():
+        ws3.column_dimensions[get_column_letter(col)].width = width
+    ws3.freeze_panes = 'A2'
+    ws3.auto_filter.ref = f"A1:{get_column_letter(len(outreach_headers))}{len(results) + 1}"
 
     wb.save(output_path)
 
@@ -1022,6 +1297,14 @@ TRAINING EXAMPLES:
 5. Jeremy Signoret — VP Technical PO at Lombard Odier → Score: 80, Tier A. Owns web app delivery in banking, legacy migration pain.
 6. Daryouche Khodaï — Cybersecurity & Digital Fraud at BNP Paribas → Score: 0, Tier D. Security ops, not QA.
 7. Laurent Benatar — DG Technologies et Opérations at Groupe BPCE → Score: 74, Tier B. Executive sponsor, pitch transformation.
+
+HARD DISQUALIFIERS — Check these FIRST. If any apply, assign Tier D (score ≤ 25) immediately. Do NOT reason around them.
+1. OUTSIDE FRANCE: Experience 1 location is outside France (US, UK, Germany, Netherlands, Canada, Australia, India, Singapore, Dubai, etc.) → Tier D, score ≤ 20
+2. LEFT TARGET COMPANY: The person's current LinkedIn employer (Experience 1 Company) does not match the company being scored → Tier D. They have no authority there anymore.
+3. INTERNSHIP/WORK-STUDY: Experience 1 Employment Type is "Internship", "Contract" immediately following an internship, or "Work Study" → Tier D
+4. STUDENT/RECENT GRAD: Headline contains a graduation cohort year like "EDHEC 25'", "HEC'26", "class of 2025" → Tier D (no budget authority)
+5. SELF-EMPLOYED COACH: Headline contains "ex-[title]" or "I help [persona] leaders" → they no longer work at the company, no budget → Tier D
+6. REVENUE/CRO PRODUCT: The product/PM role is explicitly and primarily about revenue growth, conversion rate optimization, B2C monetisation, P&L, LTV, ARPU — not about software quality or engineering delivery → Tier C or D
 
 SCORING TIERS:
 - Tier A (80-100): Direct buyer or strong influence over QA decisions
@@ -1271,8 +1554,32 @@ def _call_anthropic(api_key, model, prompt):
 
 
 # Borderline score thresholds for AI review
-AI_REVIEW_LOW = 35   # Below this = confident D, skip AI
+AI_REVIEW_LOW = 35   # Deprecated: replaced by is_obviously_irrelevant() — kept for reference
 AI_REVIEW_HIGH = 82  # Above this = confident A, skip AI
+
+
+def is_obviously_irrelevant(t):
+    """Return True only if title is unambiguously from a non-tech domain.
+
+    Conservative: if in doubt, return False (let AI score the lead).
+    Only checks title_blob — descriptions and About belong to AI reasoning.
+    This replaces the AI_REVIEW_LOW numeric gate in hybrid mode.
+    """
+    title = t['title_blob']
+
+    # Step 1: Check for obviously non-tech role keywords
+    irrelevant_match = (
+        has(title, KW_OBVIOUSLY_IRRELEVANT)
+        or has_word(title, KW_OBVIOUSLY_IRRELEVANT_WORD)
+    )
+    if not irrelevant_match:
+        return False
+
+    # Step 2: Tech modifier override — e.g., "HR Information Systems Director"
+    if has(title, KW_TECH_MODIFIERS):
+        return False
+
+    return True
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -1299,7 +1606,7 @@ def process_leads(input_csv, output_xlsx, api_key=None, ai_model='claude-sonnet-
         print(f"\n** FULL-AI MODE: Every lead scored by AI (no deterministic bypass)")
         print(f"   Provider: {provider}  Model: {ai_model}")
     elif hybrid_mode:
-        print(f"\n** HYBRID MODE: AI inference enabled for borderline leads ({AI_REVIEW_LOW}-{AI_REVIEW_HIGH})")
+        print(f"\n** HYBRID MODE: AI inference enabled for all leads except clearly non-tech titles (rules>{AI_REVIEW_HIGH} skips AI)")
         print(f"   Model: {ai_model}")
     else:
         print("\n** RULES-ONLY MODE: Deterministic scoring (no AI inference)")
@@ -1400,9 +1707,13 @@ def process_leads(input_csv, output_xlsx, api_key=None, ai_model='claude-sonnet-
             }
             results.append(entry)
 
-            # Flag borderline leads for AI review
-            if hybrid_mode and AI_REVIEW_LOW <= result['score'] <= AI_REVIEW_HIGH:
-                borderline_indices.append(len(results) - 1)
+            # Flag leads for AI review — skip only if title is obviously non-tech
+            if hybrid_mode:
+                t_check = extract_all_text(lead)
+                if is_obviously_irrelevant(t_check):
+                    entry['method'] = 'rules (clearly non-tech title)'
+                elif result['score'] <= AI_REVIEW_HIGH:
+                    borderline_indices.append(len(results) - 1)
 
         print(f"\nDeterministic pass complete: {len(results)} leads scored")
 
@@ -1439,7 +1750,7 @@ def process_leads(input_csv, output_xlsx, api_key=None, ai_model='claude-sonnet-
 
             print(f"\nAI pass complete: {ai_reviewed} reviewed, {ai_failed} failed (kept rule score)")
         elif hybrid_mode:
-            print("No borderline leads found -- all leads scored confidently by rules")
+            print("No leads queued for AI -- all scored confidently by rules or flagged as clearly non-tech")
 
         # Clean up: remove internal _lead reference before output
         for entry in results:

@@ -41,6 +41,10 @@ async def export_xlsx(run_id: str):
             "red_flags_detail": r.red_flags,
             "method": r.method,
             "email": r.email,
+            "mobile_number": r.mobile_number,
+            "phone_number": r.phone_number,
+            "website": r.website,
+            "job_title": r.job_title,
         })
 
     # Write to temp file

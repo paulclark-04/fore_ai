@@ -45,15 +45,18 @@ async def run_leads_finder(
     if seniority_levels:
         payload["seniority_level"] = seniority_levels
     if location:
-        payload["contact_location"] = location
+        # Apify requires lowercase location values (e.g. "united kingdom" not "United Kingdom")
+        payload["contact_location"] = [l.lower() for l in location]
     if email_status:
         payload["email_status"] = email_status
 
     url = f"{APIFY_BASE}/acts/{ACTOR_ID}/run-sync-get-dataset-items"
-    params = {"token": APIFY_API_TOKEN}
+    # Apify sync timeout (seconds) — must be ≤ 300. Pass it as a query param so
+    # the server waits long enough before returning 400 (TIMED-OUT).
+    params = {"token": APIFY_API_TOKEN, "timeout": 300}
 
     logger.info("Leads Finder payload: %s", payload)
-    async with httpx.AsyncClient(timeout=300) as client:
+    async with httpx.AsyncClient(timeout=360) as client:
         resp = await client.post(
             url,
             params=params,
@@ -90,7 +93,7 @@ async def run_leads_finder_async(
     if seniority_levels:
         payload["seniority_level"] = seniority_levels
     if location:
-        payload["contact_location"] = location
+        payload["contact_location"] = [l.lower() for l in location]
     if email_status:
         payload["email_status"] = email_status
 

@@ -1,7 +1,8 @@
 {
-  "version": "1.0",
-  "description": "Ground truth for Fore AI lead scorer validation. Contains 18 leads with expected scores, tiers, categories, and key validation criteria. Sources: 7 original calibration leads (test_leads.csv) and 11 SDR-reviewed Airbus leads (Airbus_persona_review.csv + Airbus-leads.csv).",
+  "version": "1.1",
+  "description": "Ground truth for Fore AI lead scorer validation. Contains 40 leads with expected tiers. Sources: 7 original calibration leads, 11 SDR-reviewed Airbus leads, 13 SDR-reviewed Boulanger leads, and 9 SDR-reviewed Veepee leads (2026-02-24).",
   "created": "2026-02-08",
+  "updated": "2026-02-24",
   "validation_rules": {
     "tier_must_match": true,
     "score_within_tolerance": true,
@@ -574,6 +575,467 @@
       ],
       "sdr_review_summary": "SDR says: Not primary target. Senior procurement/supply-chain leader, not software quality/engineering owner. Could be relevant later as procurement gate if Airbus Defence & Space becomes a real opportunity.",
       "validation_notes": "Physical supply chain procurement leader. Zero software context. All metrics and challenges relate to physical goods. Must score D."
+    },
+    {
+      "id": 20,
+      "name": "Benoit MAZEREEUW",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Directeur de l'Offre Accessoires, de l'innovation de l'Offre et des Clients Pro",
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_red_flags": [
+        "Commercial product-category innovation, not tech innovation",
+        "'Innovation de l'Offre' = product assortment strategy, not tech startup scouting",
+        "No engineering or IT background",
+        "Business/commercial role at a retailer"
+      ],
+      "anti_patterns_to_avoid": [
+        "Generic 'innovation' keyword must not trigger innovation scout layer without strong tech signals (startup, scouting, POC, veille technologique)",
+        "Directeur with 'innovation' in commercial context is not equivalent to a tech innovation scout"
+      ],
+      "sdr_review_summary": "He's a business guy. Commercial product category director, not relevant.",
+      "validation_notes": "Classic retail 'innovation' false positive. Title contains 'innovation' but refers to product offer strategy, not tech startup partnerships. Must score D."
+    },
+    {
+      "id": 21,
+      "name": "Karim Menni",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Directeur Commerce Digital",
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_red_flags": [
+        "'Commerce Digital' = e-commerce revenue strategy, not software engineering",
+        "No tech or IT background",
+        "Business/commercial role: owns revenue metrics, not software delivery"
+      ],
+      "anti_patterns_to_avoid": [
+        "'Digital' in 'Commerce Digital' must not trigger digital transformation persona",
+        "E-commerce context in company descriptions must not inflate software DNA for a commercial director"
+      ],
+      "sdr_review_summary": "Business oriented, no tech background.",
+      "validation_notes": "Retail e-commerce commercial director. 'Commerce Digital' is a business role, not a software engineering one. Must score D."
+    },
+    {
+      "id": 22,
+      "name": "Yohann DJAFER-CHERIF",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Product Manager | Self&Care | Expérience Digitale",
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_red_flags": [
+        "Product Manager in CX/UX domain: 'Expérience Digitale' = digital customer experience",
+        "'Self&Care' = customer self-service journeys, not software delivery",
+        "No tech oversight, no software engineering background"
+      ],
+      "anti_patterns_to_avoid": [
+        "'Product Manager' must not score high without software delivery or engineering context",
+        "'Expérience Digitale' is a CX role, not a digital transformation or software role"
+      ],
+      "sdr_review_summary": "Too business oriented, no clear tech oversight.",
+      "validation_notes": "CX product manager. Title sounds digital but scope is customer experience journeys. No software delivery ownership. Must score D."
+    },
+    {
+      "id": 23,
+      "name": "Cédric Cambier",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Directeur Expérience et Exploitation Digitale",
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_red_flags": [
+        "'Expérience et Exploitation Digitale' = digital customer experience operations",
+        "Business/CX director, not IT or software engineering director",
+        "No software engineering or technical delivery background"
+      ],
+      "anti_patterns_to_avoid": [
+        "'Digital' in title must not trigger digital transformation persona for CX/UX directors",
+        "'Exploitation Digitale' in retail CX context = digital customer touchpoint operations, not IT ops"
+      ],
+      "sdr_review_summary": "No software related. Profile is very business oriented.",
+      "validation_notes": "CX/digital operations director at a retailer. Despite 'digital' in title, this is a customer experience role with no software delivery ownership. Must score D."
+    },
+    {
+      "id": 24,
+      "name": "Cedric BLONDEL",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Business Owner Satisfaction Client",
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_red_flags": [
+        "'Satisfaction Client' = NPS/CX metrics ownership, not software quality",
+        "'Business Owner' without software or engineering context = commercial role",
+        "No IT or software background despite working at an e-commerce company"
+      ],
+      "anti_patterns_to_avoid": [
+        "Working at an e-commerce company must not generate software DNA for a purely commercial role",
+        "Past Product Owner role in CX context does not qualify as software QA buyer"
+      ],
+      "sdr_review_summary": "No software related. Profile is very business oriented.",
+      "validation_notes": "Customer satisfaction owner at a retailer. Pure CX/business role, no software delivery involvement. Must score D."
+    },
+    {
+      "id": 25,
+      "name": "Quentin Goffinon",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Deputy (Adjoint) Chief Data Officer @Boulanger",
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Deputy Chief Data Officer at a large French tech-forward retailer",
+        "CDO role directly linked to software quality: data pipelines, data engineering, data governance",
+        "Technical executive with decision-making authority over data tooling and platforms",
+        "Data quality = software quality — strong QA adjacency"
+      ],
+      "anti_patterns_to_avoid": [
+        "CDO must not fall into 'C-Level unclear tech scope' (15 pts) — should be recognized as executive sponsor (28 pts)",
+        "Tier A expected with enriched data (full LinkedIn profile); with unenriched Leads Finder data, B tier is acceptable"
+      ],
+      "sdr_review_summary": "Low A tier. Chief Data Officer is tightly linked to software QA. Has decision making therefore a priority in outreach.",
+      "validation_notes": "Deputy CDO at Boulanger. CDOs own data pipelines and engineering teams — tightly linked to software quality. With full LinkedIn enrichment must score A. Minimum B without enrichment."
+    },
+    {
+      "id": 26,
+      "name": "Ambre BEULENS",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Business Product Owner Navigation B.com",
+      "expected_tier": "B",
+      "tier_is_hard_constraint": false,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Product Owner for website navigation — direct web app responsibility",
+        "Owns the B.com navigation experience = software product delivery"
+      ],
+      "anti_patterns_to_avoid": [
+        "Should NOT score A — business-oriented PO, not a primary technical buyer"
+      ],
+      "sdr_review_summary": "Lower B tier. Business oriented but has clear web app customer journey responsibilities.",
+      "validation_notes": "Web navigation PO. Has web app delivery scope but is business-oriented. Lower B is the correct range."
+    },
+    {
+      "id": 27,
+      "name": "Hélène Hauguel",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Product Manager application mobile l Boulanger",
+      "expected_tier": "B",
+      "tier_is_hard_constraint": false,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Product Manager for the Boulanger mobile app — direct software product ownership",
+        "Owns mobile app roadmap = knows software QA pain directly",
+        "Mobile application context: test coverage and release quality are relevant"
+      ],
+      "anti_patterns_to_avoid": [
+        "Should not score A — PM of a mobile app, not a QA buyer or tech leader"
+      ],
+      "sdr_review_summary": "Higher B tier. Responsible of the mobile app and its roadmap so definitely has knowledge of software QA.",
+      "validation_notes": "Mobile app product manager. Strong B — owns the product whose quality Fore AI improves, but is not the QA buyer directly."
+    },
+    {
+      "id": 28,
+      "name": "Julien Oet",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Chief Transformation, Sustainability, AI Officer",
+      "expected_tier": "B",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "C-suite AI Officer — executive sponsor with AI mandate",
+        "Transformation + AI scope = could pilot AI-powered QA agents",
+        "Board member = budget authority"
+      ],
+      "anti_patterns_to_avoid": [
+        "Not a direct QA buyer — AI/transformation exec, not QA owner"
+      ],
+      "sdr_review_summary": "Good sponsor, C-suite AI related. Higher B tier.",
+      "validation_notes": "C-suite AI and transformation officer. Strong executive sponsor profile for AI-powered QA. Must score B."
+    },
+    {
+      "id": 29,
+      "name": "Yannick Herrmann",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Finance controlling director",
+      "expected_tier": "B",
+      "tier_is_hard_constraint": false,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Finance Controlling Director with IT/DSI budget oversight (per SDR review)",
+        "Oversees IT investment budget = involved in tooling decisions",
+        "Digital transformation budget authority"
+      ],
+      "anti_patterns_to_avoid": [
+        "Title alone ('Finance controlling director') looks non-technical — must rely on enriched profile data for proper scoring"
+      ],
+      "sdr_review_summary": "Higher B tier. Related to IT and DSI buying and transformation. Oversees budget.",
+      "validation_notes": "Finance director with IT budget oversight. Requires enriched LinkedIn data to score properly. With enrichment, B tier is expected."
+    },
+    {
+      "id": 30,
+      "name": "corinne salm",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Directrice Business Unit",
+      "expected_tier": "C",
+      "tier_is_hard_constraint": false,
+      "expected_category": "Connector",
+      "key_signals": [],
+      "key_red_flags": [
+        "Business Unit director — unclear tech scope",
+        "No specific software or IT context from title alone"
+      ],
+      "anti_patterns_to_avoid": [
+        "Must not score B or A without enriched data showing IT/tech scope"
+      ],
+      "sdr_review_summary": "Meh. C tier.",
+      "validation_notes": "Generic Business Unit director. Without enriched data showing tech oversight, C tier is appropriate."
+    },
+    {
+      "id": 31,
+      "name": "Antoine Brillon",
+      "source": "boulanger_sdr_review",
+      "source_file": "leads_boulanger_com - Lead Scores.csv",
+      "company": "Boulanger",
+      "title": "Responsable des Pôles Service Manager Ops et Outils de Production 24/7",
+      "expected_tier": "B",
+      "tier_is_hard_constraint": false,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "IT Operations and Production Tools responsibility",
+        "'Outils de Production' = production tooling and reliability = QA-adjacent",
+        "24/7 service management = release quality and stability are pain points"
+      ],
+      "anti_patterns_to_avoid": [
+        "Borderline case — enriched data needed to confirm IT context"
+      ],
+      "sdr_review_summary": "Lower B tier. Not exactly sure.",
+      "validation_notes": "IT ops and production tools manager. Lower B range — adjacent to QA via production tooling ownership."
+    },
+    {
+      "id": 32,
+      "name": "Rania KALLEL",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee",
+      "title": "Lead QA Domain",
+      "expected_score": 100,
+      "score_tolerance": 5,
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Primary Buyer",
+      "key_signals": [
+        "Direct QA Domain Lead title",
+        "Actively managing PoC for testing tools (Xray)",
+        "Explicit mandate: provide best QA tools and methods",
+        "Buying intent clearly stated in description"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Must score 100 — this is the textbook best-case, active PoC manager with buying intent"
+      ]
+    },
+    {
+      "id": 33,
+      "name": "Arnaud BOYENVAL",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee",
+      "title": "Senior QA Automation Engineer / SDET",
+      "expected_score": 91,
+      "score_tolerance": 5,
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Primary Buyer",
+      "key_signals": [
+        "Direct QA Automation / SDET title",
+        "Python, Playwright, Selenium, CI/CD, X-Ray automation stack",
+        "Most directly impacted by autonomous QA agents"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Must score ~91 — direct QA practitioner, not 88 or below"
+      ]
+    },
+    {
+      "id": 34,
+      "name": "Minh Quang PHAM",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee",
+      "title": "Group CTO",
+      "expected_score": 93,
+      "score_tolerance": 5,
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Primary Buyer",
+      "key_signals": [
+        "Group CTO — highest technology decision maker",
+        "Explicitly leads AI-first strategy of the group",
+        "11+ year tenure at Veepee"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Must NOT score 80 — Group CTO with explicit AI-first mandate scores 90-95, not 80",
+        "Do not under-score Group-level C-suite with AI/automation mandate"
+      ]
+    },
+    {
+      "id": 35,
+      "name": "Helmi BOUHLEL",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee",
+      "title": "Chief Data Officer & Chief of Staff",
+      "expected_score": 83,
+      "score_tolerance": 5,
+      "expected_tier": "A",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Primary Buyer",
+      "key_signals": [
+        "C-level with clear decision authority",
+        "Digital transformation mandate at e-commerce enterprise",
+        "Business impact focus, budget authority"
+      ],
+      "key_red_flags": [],
+      "anti_patterns_to_avoid": [
+        "Must NOT score 76/B — CDO at enterprise e-commerce is A tier at 83",
+        "Do not under-score CDOs; they have budget authority and transformation mandates"
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Flavien Moutawe",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee",
+      "title": "Engineering Manager | EngineeringOps & AI Automation",
+      "expected_score": 78,
+      "score_tolerance": 7,
+      "expected_tier": "B",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Sponsor",
+      "key_signals": [
+        "Uses Playwright and Sonar explicitly",
+        "Advocates for quality culture (test pyramid)",
+        "Manages 18 developers across 15 product teams"
+      ],
+      "key_red_flags": [
+        "Engineering Manager, not QA owner — does not own testing decisions"
+      ],
+      "anti_patterns_to_avoid": [
+        "Must NOT score 99/A — Engineering Manager with QA tool mentions caps at 88",
+        "Score ceiling rule: 90+ only for direct QA titles or active PoC managers"
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Marion Mélin-Weiss",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee",
+      "title": "Head of Group Content – Quality, Responsibility & AI Enablement",
+      "expected_score": null,
+      "score_tolerance": 10,
+      "expected_tier": "C",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Connector",
+      "key_signals": [],
+      "key_red_flags": [
+        "Content quality = quality of catalogs, media, editorial text — NOT software QA",
+        "AI enablement here is for content generation, not software testing"
+      ],
+      "anti_patterns_to_avoid": [
+        "Must NOT score 98/A — 'Quality' in content context is NOT software QA",
+        "Content Quality trap: do not confuse content/catalog quality with software engineering quality"
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Christine LU AYEL",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee",
+      "title": "Product Owner (Revenue Management & Billing)",
+      "expected_score": 0,
+      "score_tolerance": 10,
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_signals": [],
+      "key_red_flags": [
+        "Revenue management, billing, stock accounting — commercial/finance function",
+        "Not software engineering or QA"
+      ],
+      "anti_patterns_to_avoid": [
+        "Must NOT score A — Product Owner title does not override commercial domain",
+        "Revenue Management POs are D tier regardless of automation mentions"
+      ]
+    },
+    {
+      "id": 39,
+      "name": "Jerome Blache",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee (former)",
+      "title": "Lead QA",
+      "expected_score": 0,
+      "score_tolerance": 5,
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_signals": [],
+      "key_red_flags": [
+        "No longer works at Veepee — current employer mismatch"
+      ],
+      "anti_patterns_to_avoid": [
+        "Must NOT score 100/A despite perfect QA title — person left the company",
+        "Always verify current employer matches searched company"
+      ]
+    },
+    {
+      "id": 40,
+      "name": "Farida MERZOUGUI",
+      "source": "rlhf",
+      "source_file": "veepee-2026-02-24",
+      "company": "Veepee",
+      "title": "(empty profile)",
+      "expected_score": 0,
+      "score_tolerance": 10,
+      "expected_tier": "D",
+      "tier_is_hard_constraint": true,
+      "expected_category": "Not Relevant",
+      "key_signals": [],
+      "key_red_flags": [
+        "Empty LinkedIn profile — no title, no description, no experience"
+      ],
+      "anti_patterns_to_avoid": [
+        "Must NOT score 85/A — empty profile cannot be assessed",
+        "Do not invent a persona from company context alone"
+      ]
     }
   ]
 }

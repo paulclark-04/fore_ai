@@ -20,7 +20,8 @@ const EMAIL_STATUS_OPTIONS = [
 ];
 
 export default function SearchForm({ onSearch, isRunning }) {
-  const [companyDomain, setCompanyDomain] = useState('');
+  const [domains, setDomains] = useState([]);
+  const [domainInput, setDomainInput] = useState('');
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [titleKeywords, setTitleKeywords] = useState('');
   const [seniorities, setSeniorities] = useState(['c_suite', 'vp', 'director']);
@@ -54,12 +55,56 @@ export default function SearchForm({ onSearch, isRunning }) {
     }
   };
 
+  const normalizeDomain = (val) => {
+    let d = val.trim().toLowerCase().replace(/,/g, '');
+    d = d.replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
+    return d;
+  };
+
+  const addDomain = (val) => {
+    const cleaned = normalizeDomain(val);
+    if (cleaned && !domains.includes(cleaned)) {
+      setDomains((prev) => [...prev, cleaned]);
+    }
+    setDomainInput('');
+  };
+
+  const handleDomainKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (domainInput.trim()) {
+        addDomain(domainInput);
+      } else if (domains.length > 0) {
+        // Enter with empty input and domains present → submit
+        handleSubmit(e);
+      }
+    }
+    if (e.key === ',') {
+      e.preventDefault();
+      addDomain(domainInput);
+    }
+    if (e.key === 'Backspace' && !domainInput && domains.length > 0) {
+      setDomains((prev) => prev.slice(0, -1));
+    }
+  };
+
+  const handleDomainBlur = () => {
+    if (domainInput.trim()) addDomain(domainInput);
+  };
+
+  const removeDomain = (d) => setDomains((prev) => prev.filter((x) => x !== d));
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!companyDomain.trim()) return;
+    const allDomains = domainInput.trim()
+      ? [...domains, ...domainInput.split(',').map((d) => d.trim()).filter(Boolean)]
+      : domains;
+    if (allDomains.length === 0) return;
+    setDomainInput('');
+    setDomains(allDomains);
 
     const params = {
-      company_domain: companyDomain.split(',').map((d) => d.trim()).filter(Boolean),
+      company_domain: allDomains,
       fetch_count: fetchCount,
       enable_scoring: enableScoring,
     };
@@ -98,19 +143,38 @@ export default function SearchForm({ onSearch, isRunning }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Company Domain */}
+      {/* Company Domain(s) — tag input */}
       <div className="mb-8">
         <label className="block text-[10px] font-medium tracking-[0.15em] uppercase text-[#4e4f4d] mb-3 font-[var(--font-fore-mono)]">
-          Company Domain(s) <span className="normal-case tracking-normal text-[#A3A3A3] font-normal">(comma-separated)</span>
+          Accounts <span className="normal-case tracking-normal text-[#A3A3A3] font-normal">(press Enter or comma to add each domain)</span>
         </label>
-        <input
-          type="text"
-          value={companyDomain}
-          onChange={(e) => setCompanyDomain(e.target.value)}
-          placeholder="e.g. airbus.com, credit-agricole.com"
-          className="w-full px-0 py-3 bg-transparent border-0 border-b-2 border-[#075056] text-lg text-black placeholder:text-[#A3A3A3] placeholder:italic focus:border-b-[3px] focus:outline-none transition-all duration-100 rounded-none"
-          required
-        />
+        <div className="flex flex-wrap gap-2 items-center py-2 border-b-2 border-[#075056] focus-within:border-b-[3px] transition-all duration-100 min-h-[3rem]">
+          {domains.map((d) => (
+            <span
+              key={d}
+              className="flex items-center gap-1 bg-[#075056] text-white text-xs px-2 py-1 font-[var(--font-fore-mono)] shrink-0"
+            >
+              {d}
+              <button
+                type="button"
+                onClick={() => removeDomain(d)}
+                className="ml-1 opacity-70 hover:opacity-100 leading-none cursor-pointer"
+                aria-label={`Remove ${d}`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+          <input
+            type="text"
+            value={domainInput}
+            onChange={(e) => setDomainInput(e.target.value)}
+            onKeyDown={handleDomainKeyDown}
+            onBlur={handleDomainBlur}
+            placeholder={domains.length === 0 ? 'e.g. airbus.com' : 'Add another…'}
+            className="flex-1 min-w-[180px] px-0 py-1 bg-transparent border-0 text-base text-black placeholder:text-[#A3A3A3] placeholder:italic focus:outline-none"
+          />
+        </div>
       </div>
 
       {/* Vertical */}
@@ -286,22 +350,14 @@ export default function SearchForm({ onSearch, isRunning }) {
       {/* Submit */}
       <Button
         type="submit"
-        disabled={isRunning || !companyDomain.trim()}
+        disabled={domains.length === 0 && !domainInput.trim()}
         variant="accent"
         size="lg"
         className="w-full"
       >
-        {isRunning ? (
-          <>
-            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-            </svg>
-            Pipeline Running...
-          </>
-        ) : (
-          <>Search & Enrich &rarr;</>
-        )}
+        {domains.length > 1
+          ? `Run ${domains.length} Accounts →`
+          : 'Run →'}
       </Button>
     </form>
   );

@@ -86,3 +86,79 @@ export function getAccountExportUrl(domain, filters = {}) {
   if (filters.enriched != null) params.set('enriched', filters.enriched);
   return `${BASE}/api/accounts/${encodeURIComponent(domain)}/export/xlsx?${params}`;
 }
+
+// ── Waves ────────────────────────────────────────────────────────────────────
+
+export async function getWaves() {
+  const res = await fetch(`${BASE}/api/waves`);
+  if (!res.ok) throw new Error(`Failed to fetch waves: ${res.status}`);
+  return res.json();
+}
+
+export async function createWave(name) {
+  const res = await fetch(`${BASE}/api/waves`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name }),
+  });
+  if (!res.ok) throw new Error(`Failed to create wave: ${res.status}`);
+  return res.json();
+}
+
+export async function getWave(waveId) {
+  const res = await fetch(`${BASE}/api/waves/${waveId}`);
+  if (!res.ok) throw new Error(`Failed to fetch wave: ${res.status}`);
+  return res.json();
+}
+
+export async function deleteWave(waveId) {
+  const res = await fetch(`${BASE}/api/waves/${waveId}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error(`Failed to delete wave: ${res.status}`);
+  return res.json();
+}
+
+export async function addWaveAccount(waveId, domain, vertical = null) {
+  const res = await fetch(`${BASE}/api/waves/${waveId}/accounts`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ domain, vertical }),
+  });
+  if (!res.ok) throw new Error(`Failed to add account: ${res.status}`);
+  return res.json();
+}
+
+export async function removeWaveAccount(waveId, domain) {
+  const res = await fetch(`${BASE}/api/waves/${waveId}/accounts/${encodeURIComponent(domain)}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error(`Failed to remove account: ${res.status}`);
+  return res.json();
+}
+
+export async function updateWaveAccountVertical(waveId, domain, vertical) {
+  const res = await fetch(`${BASE}/api/waves/${waveId}/accounts/${encodeURIComponent(domain)}/vertical`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ vertical }),
+  });
+  if (!res.ok) throw new Error(`Failed to update vertical: ${res.status}`);
+  return res.json();
+}
+
+export async function runWave(waveId, params) {
+  const res = await fetch(`${BASE}/api/waves/${waveId}/run`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(params),
+  });
+  if (!res.ok) throw new Error(`Failed to run wave: ${res.status}`);
+  return res.json();
+}
+
+// ── Pipeline ──────────────────────────────────────────────────────────────────
+
+export async function getPipelineStatus() {
+  const res = await fetch(`${BASE}/api/pipeline`);
+  if (!res.ok) throw new Error(`Pipeline fetch failed: ${res.status}`);
+  return res.json();
+}

@@ -24,6 +24,10 @@ If ANY of these apply to the CURRENT role, score 0-30 (Tier D) immediately:
 - Consultant at an ESN firm (Capgemini, Sopra Steria, Atos, CGI, Altran, Alten, Accenture, Devoteam, Aubay, Cognizant, TCS, Wipro, Infosys, Deloitte, KPMG, EY, PwC, etc.) — they have no budget authority at client sites
   EXCEPTION: Past ESN employer is OK if person NOW works at an end-client with long tenure.
 - Freelancers / Independent consultants / Self-employed: "Freelance", "Indépendant", "Auto-entrepreneur", "Consultant indépendant", self-employed contractors. They have no internal role, no budget authority, and no decision-making power within the target company. Always D tier.
+- Content Quality / Content Data Quality / Catalog Quality: Owns quality of content assets (product catalogs, media descriptions, editorial text). NOT software engineering or QA processes. C tier max, and only if there is broader software delivery context.
+- Revenue Management / Billing / Pricing / Yield Management: Commercial or finance function. Not software engineering. D tier.
+- Individual developer / software engineer (no people management): Software Engineer, Lead Developer, SDET without explicit team management scope. No budget authority, no purchase decisions. Score 55-72 max regardless of seniority or QA tool mentions.
+- Empty LinkedIn profile (no title, no description, no meaningful experience): Cannot assess persona fit. D tier.
 
 CRITICAL TRAP — "CTO" at aerospace/manufacturing:
 At companies like Airbus, "CTO" means Chief Technology Officer for PHYSICAL products (wings, airframes), NOT software. Check descriptions for hardware keywords. If descriptions mention airframes, wings, structures, propulsion, mechanical engineering -> D tier.
@@ -111,6 +115,13 @@ NEGATIVE adjustments (push score DOWN within range):
 -5  Title is very generic/ambiguous with minimal software context
 -10 Mixed signals: some software DNA but predominantly hardware/physical in current role
 
+SCORE CEILING RULE — 90-100 is ONLY for:
+(1) Direct QA/Test/Release title with clear software context: QA Lead, Head of QA, Test Manager, Release Manager, SDET, Responsable Recette, Test Automation Lead
+(2) Profiles explicitly running or managing a PoC for QA/testing tools — buying intent clearly stated in their description
+(3) Group-level C-suite (Group CTO, Group CDO, Group CIO) with an explicit AI/automation/digital mandate
+
+Everything else — engineering managers with QA involvement, DevOps leads, Product Owners, VP Engineering — caps at 88. Do NOT inflate to 90+ just because someone is senior, mentions QA tools, or owns delivery quality in a broad sense. A score of 83-88 is already a very strong A-tier lead.
+
 IMPORTANT RULE: Current role trumps past history. Do not score someone on a job they left years ago. A former Head of QA who is now in Sales = D tier.
 
 IMPORTANT RULE: Recency trumps About section. The About/summary may reflect old skills or interests. The current position title and description are what matter most.
@@ -136,6 +147,22 @@ TIER A examples:
 4. Arnaud Raffray — "Head of IM for Corporate Functions & Transverse Products" at Airbus
    Score: 80, Category: Sponsor
    Why: Reports to CIO, 350 people, 500+ applications (Skywise, SAP Finance, airbus.com). Enterprise-scale pain around release velocity, regression risk. Exceptional sponsor scoring A-tier due to massive IT scope (500+ apps, 350 people).
+
+5. Rania KALLEL — "Lead QA Domain" at Veepee
+   Score: 100, Category: Primary Buyer
+   Why: Textbook best-case primary buyer. Directly defines test strategies, leads QA automation initiatives, and is actively managing a PoC for testing tools (Xray). Explicit buying intent in description. Direct QA title + active tool evaluation = 100.
+
+6. Arnaud BOYENVAL — "Senior QA Automation Engineer / SDET" at Veepee
+   Score: 91, Category: Primary Buyer
+   Why: SDET/QA Automation Engineer who designs and deploys automation frameworks (Python, Playwright, Selenium, CI/CD, X-Ray). Most directly impacted by autonomous QA agents — these tools solve his exact daily work. Direct QA practitioner title = 91.
+
+7. Minh Quang PHAM — "Group CTO" at Veepee
+   Score: 93, Category: Primary Buyer
+   Why: Group CTO explicitly leading the company's "AI first strategy." Top technology decision maker with AI/automation mandate. Group-level C-suite + explicit AI mandate = 93, not 80. Highest decision authority with clear innovation appetite.
+
+8. Helmi BOUHLEL — "Chief Data Officer & Chief of Staff" at Veepee
+   Score: 83, Category: Primary Buyer
+   Why: C-level with clear decision authority driving large-scale digital transformation. CDO with business impact focus at an e-commerce enterprise. Score 83 — A-tier executive sponsor. Do not under-score CDOs; they have budget authority and transformation mandates.
 
 TIER B examples:
 
@@ -163,6 +190,14 @@ TIER B examples:
     Score: 60, Category: Sponsor
     Why: Group-wide AI mandate, consolidated AI investment portfolio, co-founded AI Centre of Excellence. Innovation scout with AI budget authority. Previously Head of Digital & New Business driving Skywise. Not a direct QA buyer but could pilot QA agents as part of AI portfolio.
 
+11. Flavien Moutawe — "Engineering Manager | EngineeringOps & AI Automation" at Veepee
+    Score: 78, Category: Sponsor
+    Why: Engineering Manager leading 18 developers across 15 product teams. Explicitly uses Playwright and Sonar, advocates for quality culture. Strong software DNA and QA awareness — but he is a delivery manager, not the QA owner. Does not own testing decisions directly. Cap at 78. Do NOT score 90+.
+
+12. Rami Saadallah — "Lead Software Engineer | Engineering Manager | Java/Spring Expert" at Veepee
+    Score: 65, Category: Sponsor
+    Why: Lead Software Engineer and team manager with strong technical background (microservices, CI/CD, Kafka). Relevant domain but engineering ICs and tech leads without explicit QA ownership have limited decision-making power over tooling purchases. Score 65 B-tier.
+
 TIER C examples:
 
 11. Nicolas Merle — "Sovereign Cloud Program Manager" at Airbus. Previously Cloud Transformation Director.
@@ -185,6 +220,10 @@ TIER C examples:
     Score: 40, Category: Connector
     Why: Useful connector for PLM use cases. Not a direct buyer. Medium-low for direct buying.
 
+16. Marion Mélin-Weiss — "Head of Group Content – Quality, Responsibility & AI Enablement" at Veepee
+    Score: 42, Category: Connector
+    Why: Owns quality of content assets (product catalogs, media descriptions) and AI for content generation. "Quality" here means content/editorial quality, NOT software QA or engineering processes. Content quality ≠ software testing. C tier despite senior title and AI mentions.
+
 TIER D examples:
 
 16. Cornelius Waidelich — "Transformation Leader Airbus CTO"
@@ -202,6 +241,18 @@ TIER D examples:
 19. Daryouche Khodai — "Cybersecurity & Digital Fraud" at BNP Paribas
     Score: 0, Category: Not Relevant
     Why: Security operations, not QA. "Digital Fraud" is not Digital Transformation.
+
+20. Christine LU AYEL — "Product Owner" at Veepee (revenue management & billing)
+    Score: 0, Category: Not Relevant
+    Why: Despite "Product Owner" title, her domain is revenue management, billing, and stock accounting. Financial/commercial function, not software engineering or QA. Revenue management POs are D tier — do not confuse commercial product ownership with software delivery.
+
+21. Jerome Blache — "Lead QA" (former Veepee employee)
+    Score: 0, Category: Not Relevant
+    Why: Perfect QA title with 15 years experience and automation tools (SpecFlow, Selenium). But he no longer works at the target company. Current employer mismatch = D tier regardless of title quality. Always verify the person is still at the searched company.
+
+22. Farida MERZOUGUI — No LinkedIn profile content at Veepee
+    Score: 0, Category: Not Relevant
+    Why: LinkedIn profile has no title, no description, and no meaningful experience. Cannot assess persona fit. Empty profiles are D tier — do not invent a profile from company context alone.
 
 ===================================================
 PROFILE TO SCORE

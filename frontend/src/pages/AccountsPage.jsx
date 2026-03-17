@@ -73,6 +73,17 @@ export default function AccountsPage() {
     return sorted;
   }, [accounts, sortField, sortAsc, verticalFilter]);
 
+  const handleSetVertical = async (domain, vertical) => {
+    try {
+      await updateAccountVertical(domain, vertical || null);
+      setAccounts((prev) =>
+        prev.map((a) => (a.domain === domain ? { ...a, vertical: vertical || null } : a))
+      );
+    } catch (err) {
+      console.error('Failed to update vertical:', err);
+    }
+  };
+
   const handleSort = (field) => {
     if (sortField === field) {
       setSortAsc(!sortAsc);
@@ -554,14 +565,24 @@ export default function AccountsPage() {
                   <td className="px-4 py-3 text-center text-black font-medium">
                     {acct.domain}
                   </td>
-                  <td className="px-4 py-3 text-center">
-                    {acct.vertical ? (
-                      <span className="inline-block px-3 py-1 text-[10px] font-medium uppercase tracking-[0.1em] font-[var(--font-fore-mono)] border border-[#075056] text-[#075056]">
-                        {VERTICAL_LABELS[acct.vertical] || acct.vertical}
-                      </span>
-                    ) : (
-                      <span className="text-[#A3A3A3] text-xs">&mdash;</span>
-                    )}
+                  <td
+                    className="px-4 py-3 text-center"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <select
+                      value={acct.vertical || ''}
+                      onChange={(e) => handleSetVertical(acct.domain, e.target.value)}
+                      className={`text-[10px] bg-transparent appearance-none px-2 py-1 cursor-pointer font-[var(--font-fore-mono)] uppercase tracking-[0.08em] rounded-none border transition-colors duration-100 ${
+                        acct.vertical
+                          ? 'border-[#075056] text-[#075056]'
+                          : 'border-[#E5E7EB] text-[#A3A3A3]'
+                      }`}
+                    >
+                      <option value="">— None —</option>
+                      {VERTICALS.map((v) => (
+                        <option key={v} value={v}>{VERTICAL_LABELS[v]}</option>
+                      ))}
+                    </select>
                   </td>
                   <td className="px-4 py-3 text-center font-bold text-black font-[var(--font-fore-heading)] text-lg tracking-tighter">
                     {acct.total_leads}

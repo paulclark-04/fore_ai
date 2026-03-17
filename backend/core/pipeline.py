@@ -21,6 +21,7 @@ from backend.core.database import save_pipeline_run, upsert_account_vertical
 # In-memory storage for pipeline runs
 _runs: Dict[str, PipelineRun] = {}
 _event_queues: Dict[str, asyncio.Queue] = {}
+_run_current_step: Dict[str, dict] = {}
 
 # Cost constants
 LEADS_FINDER_COST_PER_LEAD = 0.002  # $2 per 1,000 leads
@@ -119,11 +120,23 @@ def get_event_queue(run_id: str) -> Optional[asyncio.Queue]:
     return _event_queues.get(run_id)
 
 
+def get_live_run_steps() -> Dict[str, dict]:
+    """Return the latest step info for all currently live pipeline runs."""
+    return dict(_run_current_step)
+
+
 async def _emit(run_id: str, event: PipelineEvent):
     """Push an SSE event to the run's queue."""
     queue = _event_queues.get(run_id)
     if queue:
         await queue.put(event)
+    # Track current step for the pipeline status API
+    _run_current_step[run_id] = {
+        "step": event.step,
+        "progress": event.progress,
+        "total": event.total,
+        "message": event.message,
+    }
 
 
 async def run_pipeline(run_id: str, request: SearchRequest):
@@ -197,6 +210,8 @@ async def run_pipeline(run_id: str, request: SearchRequest):
                 email=lead.get("email") or "",
                 personal_email=lead.get("personal_email") or "",
                 mobile_number=str(lead.get("mobile_number") or ""),
+                phone_number=lead.get("phone_number") or "",
+                website=lead.get("website") or "",
                 seniority_level=lead.get("seniority_level") or "",
                 functional_level=lead.get("functional_level") or "",
                 country=lead.get("country") or "",

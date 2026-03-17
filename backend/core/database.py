@@ -92,6 +92,23 @@ def init_db() -> None:
                 domain   TEXT PRIMARY KEY,
                 vertical TEXT
             );
+
+            CREATE TABLE IF NOT EXISTS waves (
+                id         TEXT PRIMARY KEY,
+                name       TEXT NOT NULL,
+                status     TEXT NOT NULL DEFAULT 'draft',
+                created_at TEXT NOT NULL
+            );
+
+            CREATE TABLE IF NOT EXISTS wave_accounts (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                wave_id    TEXT NOT NULL REFERENCES waves(id) ON DELETE CASCADE,
+                domain     TEXT NOT NULL,
+                vertical   TEXT,
+                run_id     TEXT,
+                run_status TEXT DEFAULT 'pending',
+                UNIQUE(wave_id, domain)
+            );
         """)
         # Migration: add columns if missing (for existing DBs)
         for col, col_type in [("ai_input", "TEXT DEFAULT ''"), ("ai_output", "TEXT DEFAULT ''")]:
@@ -552,5 +569,184 @@ def get_leads_by_domain(
                 "outreach_angle": row["outreach_angle"] if "outreach_angle" in row.keys() else "",
             })
         return leads
+    finally:
+        conn.close()
+
+
+# ── Waves ────────────────────────────────────────────────────────────────────
+
+def create_wave(wave_id: str, name: str) -> Dict[str, Any]:
+    """Create a new wave and return it."""
+    from datetime import datetime
+    created_at = datetime.utcnow().isoformat()
+    conn = _connect()
+    try:
+        conn.execute(
+            "INSERT INTO waves (id, name, status, created_at) VALUES (?, ?, 'draft', ?)",
+            (wave_id, name, created_at),
+        )
+        conn.commit()
+        return {"id": wave_id, "name": name, "status": "draft", "created_at": created_at, "accounts": []}
+    finally:
+        conn.close()
+
+
+def get_all_waves() -> List[Dict[str, Any]]:
+    """Return all waves with account counts."""
+    conn = _connect()
+    try:
+        rows = conn.execute(
+            "SELECT id, name, status, created_at FROM waves ORDER BY created_at DESC"
+        ).fetchall()
+        waves = []
+        for row in rows:
+            count = conn.execute(
+                "SELECT COUNT(*) as c FROM wave_accounts WHERE wave_id = ?", (row["id"],)
+            ).fetchone()["c"]
+            waves.append({
+                "id": row["id"],
+                "name": row["name"],
+                "status": row["status"],
+                "created_at": row["created_at"],
+                "account_count": count,
+            })
+        return waves
+    finally:
+        conn.close()
+
+
+def get_wave(wave_id: str) -> Optional[Dict[str, Any]]:
+    """Return a wave with its accounts and live run statuses."""
+    conn = _connect()
+    try:
+        row = conn.execute(
+            "SELECT id, name, status, created_at FROM waves WHERE id = ?", (wave_id,)
+        ).fetchone()
+        if not row:
+            return None
+
+        acct_rows = conn.execute(
+            "SELECT domain, vertical, run_id, run_status FROM wave_accounts WHERE wave_id = ? ORDER BY id",
+            (wave_id,),
+        ).fetchall()
+
+        accounts = []
+        for acct in acct_rows:
+            run_status = acct["run_status"]
+            leads_count = 0
+            # Pull live status from pipeline_runs if run_id is set
+            if acct["run_id"]:
+                pr = conn.execute(
+                    "SELECT status, total_results FROM pipeline_runs WHERE run_id = ?",
+                    (acct["run_id"],),
+                ).fetchone()
+                if pr:
+                    run_status = pr["status"]
+                    leads_count = pr["total_results"] or 0
+            accounts.append({
+                "domain": acct["domain"],
+                "vertical": acct["vertical"],
+                "run_id": acct["run_id"],
+                "run_status": run_status,
+                "leads_count": leads_count,
+            })
+
+        return {
+            "id": row["id"],
+            "name": row["name"],
+            "status": row["status"],
+            "created_at": row["created_at"],
+            "accounts": accounts,
+        }
+    finally:
+        conn.close()
+
+
+def update_wave_status(wave_id: str, status: str) -> None:
+    """Update the status of a wave."""
+    conn = _connect()
+    try:
+        conn.execute("UPDATE waves SET status = ? WHERE id = ?", (status, wave_id))
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def delete_wave(wave_id: str) -> None:
+    """Delete a wave and its accounts."""
+    conn = _connect()
+    try:
+        conn.execute("DELETE FROM waves WHERE id = ?", (wave_id,))
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def add_wave_account(wave_id: str, domain: str, vertical: Optional[str] = None) -> None:
+    """Add a domain to a wave (upserts if already present)."""
+    conn = _connect()
+    try:
+        conn.execute(
+            "INSERT INTO wave_accounts (wave_id, domain, vertical) VALUES (?, ?, ?) "
+            "ON CONFLICT(wave_id, domain) DO UPDATE SET vertical = excluded.vertical",
+            (wave_id, domain.lower().strip(), vertical),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def remove_wave_account(wave_id: str, domain: str) -> None:
+    """Remove a domain from a wave."""
+    conn = _connect()
+    try:
+        conn.execute(
+            "DELETE FROM wave_accounts WHERE wave_id = ? AND domain = ?",
+            (wave_id, domain.lower().strip()),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def update_wave_account_run(wave_id: str, domain: str, run_id: str, run_status: str = "running") -> None:
+    """Store the run_id and status for a domain in a wave."""
+    conn = _connect()
+    try:
+        conn.execute(
+            "UPDATE wave_accounts SET run_id = ?, run_status = ? WHERE wave_id = ? AND domain = ?",
+            (run_id, run_status, wave_id, domain.lower().strip()),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def update_wave_account_vertical(wave_id: str, domain: str, vertical: Optional[str]) -> None:
+    """Update the vertical for a domain within a wave."""
+    conn = _connect()
+    try:
+        conn.execute(
+            "UPDATE wave_accounts SET vertical = ? WHERE wave_id = ? AND domain = ?",
+            (vertical, wave_id, domain.lower().strip()),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def get_all_wave_run_ids() -> List[Dict[str, Any]]:
+    """Return all wave accounts that have a run_id, with wave name."""
+    conn = _connect()
+    try:
+        rows = conn.execute("""
+            SELECT wa.wave_id, wa.domain, wa.run_id, wa.run_status,
+                   w.name as wave_name
+            FROM wave_accounts wa
+            JOIN waves w ON w.id = wa.wave_id
+            WHERE wa.run_id IS NOT NULL
+            ORDER BY wa.id DESC
+        """).fetchall()
+        return [dict(r) for r in rows]
     finally:
         conn.close()
